@@ -83,13 +83,8 @@
             width: 30px;
             height: 4px;
             background-color: white;
-            margin: 5px;
+            margin: 6px 0;
             transition: all 0.3s ease;
-        }
-
-        .menu {
-            display: flex;
-            gap: 30px;
         }
 
         /* Main Sections */
@@ -264,22 +259,38 @@
 
             /* Menú desplegable en dispositivos móviles */
             .menu {
-                display: none;
-                width: 100%;
-                text-align: center;
+                position: fixed;
+                top: 0;
+                left: -250px;
+                width: 250px;
+                height: 100%;
+                background-color: #2c3e50;
+                display: flex;
                 flex-direction: column;
-                gap: 10px;
-                margin-top: 30px;
+                align-items: center;
+                justify-content: center;
+                transition: all 0.3s ease;
+                padding-top: 50px;
             }
 
             .menu.show {
-                display: flex;
+                left: 0;
+            }
+
+            .menu a {
+                color: white;
+                text-decoration: none;
+                font-size: 1.5rem;
+                margin: 15px 0;
             }
 
             .menu-icon {
                 display: block;
                 cursor: pointer;
                 z-index: 20;
+                position: absolute;
+                top: 20px;
+                left: 20px;
             }
 
             .menu-icon div {
@@ -287,6 +298,7 @@
                 height: 4px;
                 background-color: white;
                 margin: 6px 0;
+                transition: all 0.3s ease;
             }
         }
 
@@ -298,11 +310,13 @@
 <header>
     <img src="https://i.imgur.com/eg7YiiQ.png" alt="Logo de Sorbos y Sonrisas" class="logo">
     <nav>
+        <!-- Icono de hamburguesa para abrir el menú -->
         <div class="menu-icon" onclick="toggleMenu()">
             <div></div>
             <div></div>
             <div></div>
         </div>
+        <!-- Menú que aparece en el lado izquierdo -->
         <div class="menu" id="mobileMenu">
             <a href="#home">Inicio</a>
             <a href="#menu">Menú</a>
