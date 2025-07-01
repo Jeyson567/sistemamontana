@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Sorbos y Sonrisas</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* Reset styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #f8f8f8;
+            color: #333;
+            margin: 0;
+        }
+
+        /* Header */
+        header {
+            position: relative;
+            background: url('https://i.imgur.com/A2idF97.jpg') no-repeat center center/cover;
+            height: 100vh;
+            color: white;
+            text-align: center;
+            padding-top: 100px;
+            box-shadow: inset 0 0 0 1000px rgba(0, 0, 0, 0.4); /* Sombra oscura para mejorar contraste */
+        }
+
+        header h1 {
+            font-size: 4rem;
+            margin-bottom: 20px;
+        }
+
+        header p {
+            font-size: 1.5rem;
+            margin-bottom: 40px;
+        }
+
+        nav {
+            position: absolute;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 30px;
+            font-size: 1.2rem;
+            z-index: 10;
+        }
+
+        nav a {
+            color: white;
+            text-decoration: none;
+            font-weight: 600;
+            text-transform: uppercase;
+            padding: 10px;
+            border-radius: 5px;
+        }
+
+        nav a:hover {
+            background-color: #f39c12;
+            color: white;
+        }
+
+        .logo {
+            width: 150px; /* Ajusta el tamaño según sea necesario */
+            margin-bottom: 10px;
+        }
+
+        /* Main Sections */
+        section {
+            padding: 100px 20px;
+            text-align: center;
+        }
+
+        h2 {
+            font-size: 3rem;
+            margin-bottom: 20px;
+            font-weight: bold;
+        }
+
+        .menu-section {
+            background-color: #fff;
+            padding: 50px 20px;
+        }
+
+        .menu-categories {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+        }
+
+        .menu-item {
+            background-color: #fafafa;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .menu-item img {
+            width: 100%;
+            border-radius: 10px;
+        }
+
+        /* Gallery Section */
+        .gallery-section {
+            background-color: #f4f4f4;
+            padding: 50px 20px;
+        }
+
+        .gallery-section h2 {
+            margin-bottom: 30px;
+        }
+
+        .gallery-items {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+        }
+
+        .gallery-item img {
+            width: 100%;
+            height: auto;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Contact Section */
+        #contact {
+            background-color: #fff;
+            padding: 50px 20px;
+        }
+
+        #contact p {
+            font-size: 1.2rem;
+            margin-top: 10px;
+        }
+
+        #contact input, #contact textarea {
+            padding: 10px;
+            font-size: 1rem;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            width: 100%;
+        }
+
+        #contact button {
+            padding: 12px;
+            background-color: #f39c12;
+            color: white;
+            font-size: 1.2rem;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        #contact button:hover {
+            background-color: #e67e22;
+        }
+
+        /* WhatsApp button */
+        .whatsapp-button {
+            padding: 12px;
+            background-color: #25d366; /* WhatsApp color */
+            color: white;
+            font-size: 1.2rem;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            text-align: center;
+            width: 300px;
+            margin-top: 20px;
+        }
+
+        .whatsapp-button a {
+            color: white;
+            text-decoration: none;
+        }
+
+        .whatsapp-button:hover {
+            background-color: #128c7e;
+        }
+
+        /* Footer */
+        footer {
+            background-color: #2c3e50;
+            color: #fff;
+            text-align: center;
+            padding: 20px;
+        }
+
+        footer a {
+            color: #f39c12;
+            text-decoration: none;
+        }
+
+        footer a:hover {
+            text-decoration: underline;
+        }
+
+        /* Media Queries */
+        @media (max-width: 768px) {
+            header h1 {
+                font-size: 2.5rem;
+            }
+
+            header p {
+                font-size: 1.2rem;
+            }
+
+            h2 {
+                font-size: 2.5rem;
+            }
+        }
+
+    </style>
+</head>
+<body>
+
+<!-- Header -->
+<header>
+    <img src="https://i.imgur.com/eg7YiiQ.png" alt="Logo de Sorbos y Sonrisas" class="logo">
+    <nav>
+        <a href="#home">Inicio</a>
+        <a href="#menu">Menú</a>
+        <a href="#gallery">Galería</a>
+        <a href="#contact">Contacto</a>
+    </nav>
+    <h1>Sorbos y Sonrisas</h1>
+    <p>Un ambiente tranquilo rodeado de árboles, donde encuentras diferentes bebidas, snacks y deliciosos postres.</p>
+</header>
+
+<!-- Menu Section -->
+<section class="menu-section" id="menu">
+    <h2>Explora Nuestro Menú</h2>
+    <div class="menu-categories">
+        <div class="menu-item">
+            <a href="https://i.imgur.com/dSDUdcj.jpg" target="_blank"><img src="https://i.imgur.com/dSDUdcj.jpg" alt="Menú 1"></a>
+            <h3>Menú 1</h3>
+        </div>
+        <div class="menu-item">
+            <a href="https://i.imgur.com/YOzWioX.jpg" target="_blank"><img src="https://i.imgur.com/YOzWioX.jpg" alt="Menú 2"></a>
+            <h3>Menú 2</h3>
+        </div>
+    </div>
+</section>
+
+<!-- Gallery Section -->
+<section class="gallery-section" id="gallery">
+    <h2>Galería de Nuestros Productos</h2>
+    <div class="gallery-items">
+        <div class="gallery-item">
+            <img src="https://i.imgur.com/b4Uw6wp.jpg" alt="Capuchino">
+        </div>
+        <div class="gallery-item">
+            <img src="https://i.imgur.com/pgxuVMl.jpg" alt="Bebida Especial">
+        </div>
+        <div class="gallery-item">
+            <img src="https://i.imgur.com/CBt83V3.jpg" alt="Tacos">
+        </div>
+        <div class="gallery-item">
+            <img src="https://i.imgur.com/IuW3hhc.jpg" alt="Tacos">
+        </div>
+        <div class="gallery-item">
+            <img src="https://i.imgur.com/FIN6iX6.jpg" alt="Frappe">
+        </div>
+    </div>
+</section>
+
+<!-- Contact Section -->
+<section id="contact">
+    <h2>Contáctanos</h2>
+    <p>Dirección: Machaquila</p>
+    <p>Teléfono: +50235714552</p>
+    <p>Horarios:  
+        Lunes a Miércoles: 4:30 PM - 9:30 PM<br>
+        Jueves: Cerrado<br>
+        Viernes: 4:30 PM - 9:30 PM<br>
+        Sábado y Domingo: 1:00 PM - 9:30 PM
+    </p>
+
+    <!-- Google Maps Embed -->
+    <h3>Visítanos:</h3>
+    <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3925.497550929398!2d-89.454671!3d16.3956587!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x8f607dd9179675a5%3A0xfb2698980e8930e!2sMachaquil%C3%A1%2017012!5e0!3m2!1ses!2sgt!4v1685597067069!5m2!1ses!2sgt" width="100%" height="450" style="border:0;" allowfullscreen="" loading="lazy"></iframe>
+
+    <!-- WhatsApp Order/Reservation Button -->
+    <h3>Haz tu Pedido o Reserva para Evento</h3>
+    <p>Escribe tu mensaje a continuación y haz clic en el botón para enviarlo a WhatsApp:</p>
+    <textarea id="whatsappMessage" placeholder="Escribe tu pedido o reserva aquí..." rows="4"></textarea>
+    <button onclick="sendMessage()">Enviar Pedido/Reservación</button>
+</section>
+
+<!-- Footer -->
+<footer>
+    <img src="https://i.imgur.com/eg7YiiQ.png" alt="Logo de Sorbos y Sonrisas" class="logo">
+    <p>&copy; 2025 Sorbos y Sonrisas | Todos los derechos reservados.</p>
+    <p>Desarrollado por <a href="#">J&S STUDIOS</a></p>
+</footer>
+
+<script>
+    function sendMessage() {
+        var message = document.getElementById("whatsappMessage").value;
+        var whatsappLink = "https://wa.me/+50235714552?text=" + encodeURIComponent("Hola, me gustaría hacer un pedido o reservar: " + message);
+        window.open(whatsappLink, "_blank");
+    }
+</script>
+
+</body>
+</html>
