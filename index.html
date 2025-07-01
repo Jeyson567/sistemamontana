@@ -66,17 +66,23 @@
             text-transform: uppercase;
             padding: 10px;
             border-radius: 5px;
+            transition: all 0.3s;
         }
 
         nav a:hover {
             background-color: #f39c12;
             color: white;
+            text-decoration: underline; /* Subrayado al hacer hover */
         }
 
         /* Mobile menu toggle */
         .menu-icon {
             display: none;
             cursor: pointer;
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            z-index: 20;
         }
 
         .menu-icon div {
@@ -257,11 +263,11 @@
                 height: auto;
             }
 
-            /* Menú desplegable en dispositivos móviles */
+            /* Menú lateral en dispositivos móviles */
             .menu {
                 position: fixed;
                 top: 0;
-                left: -250px;
+                right: -250px;
                 width: 250px;
                 height: 100%;
                 background-color: #2c3e50;
@@ -274,7 +280,7 @@
             }
 
             .menu.show {
-                left: 0;
+                right: 0;
             }
 
             .menu a {
@@ -282,8 +288,16 @@
                 text-decoration: none;
                 font-size: 1.5rem;
                 margin: 15px 0;
+                padding: 10px;
+                transition: all 0.3s;
             }
 
+            /* Subrayado al hacer hover */
+            .menu a:hover {
+                text-decoration: underline;
+            }
+
+            /* Botón de hamburguesa */
             .menu-icon {
                 display: block;
                 cursor: pointer;
@@ -316,7 +330,7 @@
             <div></div>
             <div></div>
         </div>
-        <!-- Menú que aparece en el lado izquierdo -->
+        <!-- Menú que aparece en el lado derecho -->
         <div class="menu" id="mobileMenu">
             <a href="#home">Inicio</a>
             <a href="#menu">Menú</a>
