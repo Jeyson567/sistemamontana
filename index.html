@@ -2,416 +2,867 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Sorbos y Sonrisas</title>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+    <title>Sistema Unificado - Hotel, Cocina y Bar</title>
     <style>
-        /* Reset styles */
-        * {
+        body {
+            font-family: 'Segoe UI', Arial, sans-serif;
+            background: linear-gradient(120deg, #e0eafc, #cfdef3);
             margin: 0;
             padding: 0;
-            box-sizing: border-box;
+            min-height: 100vh;
         }
-
-        body {
-            font-family: 'Poppins', sans-serif;
-            background-color: #f8f8f8;
-            color: #333;
-            margin: 0;
-        }
-
-        /* Header */
-        header {
-            position: relative;
-            background: url('https://i.imgur.com/A2idF97.jpg') no-repeat center center/cover;
-            height: 100vh;
-            color: white;
+        h1 {
+            color: #2c3e50;
+            margin-top: 32px;
             text-align: center;
-            padding-top: 100px;
-            box-shadow: inset 0 0 0 1000px rgba(0, 0, 0, 0.4); /* Sombra oscura para mejorar contraste */
+            text-shadow: 0 2px 8px #ccc;
         }
-
-        header h1 {
-            font-size: 4rem;
-            margin-bottom: 20px;
+        .area-menu {
+            display: flex;
+            gap: 32px;
+            justify-content: center;
+            margin: 32px 0;
         }
-
-        header p {
-            font-size: 1.5rem;
-            margin-bottom: 40px;
-        }
-
-        .logo {
-            width: 150px; /* Ajusta el tamaño según sea necesario */
-            margin-bottom: 10px;
-        }
-
-        /* Navigation */
-        nav {
-            position: absolute;
-            top: 20px;
-            left: 20px; /* Menú en el lado izquierdo */
-            z-index: 20;
-        }
-
-        nav a {
-            color: white;
-            text-decoration: none;
-            font-weight: 600;
-            text-transform: uppercase;
-            padding: 10px;
-            border-radius: 5px;
-            transition: all 0.3s;
-        }
-
-        nav a:hover {
-            background-color: #f39c12;
-            color: white;
-            text-decoration: underline; /* Subrayado al hacer hover */
-        }
-
-        /* Mobile menu toggle */
-        .menu-icon {
-            display: block;
-            cursor: pointer;
-        }
-
-        .menu-icon div {
-            width: 30px;
-            height: 4px;
-            background-color: white;
-            margin: 6px 0;
-            transition: all 0.3s ease;
-        }
-
-        /* Main Sections */
-        section {
-            padding: 50px 20px;
-            text-align: center;
-        }
-
-        h2 {
-            font-size: 3rem;
-            margin-bottom: 20px;
-            font-weight: bold;
-        }
-
-        .menu-section {
-            background-color: #fff;
-            padding: 50px 20px;
-        }
-
-        .menu-categories {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 20px;
-        }
-
-        .menu-item {
-            background-color: #fafafa;
-            padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-        }
-
-        .menu-item img {
-            width: 100%;
-            border-radius: 10px;
-        }
-
-        /* Gallery Section */
-        .gallery-section {
-            background-color: #f4f4f4;
-            padding: 50px 20px;
-        }
-
-        .gallery-section h2 {
-            margin-bottom: 30px;
-        }
-
-        .gallery-items {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 20px;
-        }
-
-        .gallery-item img {
-            width: 100%;
-            height: auto;
-            border-radius: 10px;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-        }
-
-        /* Contact Section */
-        #contact {
-            background-color: #fff;
-            padding: 50px 20px;
-        }
-
-        #contact p {
-            font-size: 1.2rem;
-            margin-top: 10px;
-        }
-
-        #contact input, #contact textarea {
-            padding: 12px;
-            font-size: 1rem;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-            width: 100%;
-        }
-
-        #contact button {
-            padding: 12px;
-            background-color: #f39c12;
-            color: white;
-            font-size: 1.2rem;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-        }
-
-        #contact button:hover {
-            background-color: #e67e22;
-        }
-
-        /* WhatsApp button */
-        .whatsapp-button {
-            padding: 12px;
-            background-color: #25d366; /* WhatsApp color */
-            color: white;
-            font-size: 1.2rem;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            text-align: center;
-            width: 300px;
-            margin-top: 20px;
-        }
-
-        .whatsapp-button a {
-            color: white;
-            text-decoration: none;
-        }
-
-        .whatsapp-button:hover {
-            background-color: #128c7e;
-        }
-
-        /* Footer */
-        footer {
-            background-color: #2c3e50;
+        .area-btn {
+            background: #3498db;
             color: #fff;
+            border: none;
+            border-radius: 12px;
+            padding: 32px 48px;
+            font-size: 1.5rem;
+            cursor: pointer;
+            box-shadow: 0 2px 8px #bbb;
+            transition: background 0.2s, transform 0.2s;
+        }
+        .area-btn:hover {
+            background: #217dbb;
+            transform: scale(1.05);
+        }
+        .modulo {
+            display: none;
+            max-width: 900px;
+            margin: 0 auto 40px auto;
+            background: #fff;
+            border-radius: 16px;
+            box-shadow: 0 2px 16px #3333;
+            padding: 32px;
+        }
+        .volver-btn {
+            background: #e67e22;
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            padding: 10px 24px;
+            font-size: 1rem;
+            cursor: pointer;
+            margin-bottom: 24px;
+        }
+        .volver-btn:hover {
+            background: #b95c00;
+        }
+        /* Reutiliza estilos de hotel.html para tablas y botones */
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            background: #fff;
+            box-shadow: 0 2px 8px #ccc;
+        }
+        th, td {
+            border: 1px solid #e1e1e1;
+            padding: 10px;
             text-align: center;
-            padding: 20px;
         }
-
-        footer a {
-            color: #f39c12;
-            text-decoration: none;
+        th {
+            background: #34495e;
+            color: #fff;
         }
-
-        footer a:hover {
-            text-decoration: underline;
+        .reservada {
+            background: #ffe0e0;
         }
-
-        /* Media Queries */
-        @media (max-width: 768px) {
-            header h1 {
-                font-size: 2.5rem;
-            }
-
-            header p {
-                font-size: 1.2rem;
-            }
-
-            h2 {
-                font-size: 2.5rem;
-            }
-
-            .menu-categories {
-                grid-template-columns: 1fr 1fr; /* Hacer que los ítems del menú sean dos por fila */
-            }
-
-            .whatsapp-button {
-                width: 100%; /* Hacer que el botón de WhatsApp ocupe todo el ancho en pantallas pequeñas */
-            }
-
-            /* Ajustar los formularios en móviles */
-            #contact input, #contact textarea {
-                padding: 15px;
-                font-size: 1.1rem;
-            }
-
-            #contact button {
-                width: 100%;
-                padding: 14px;
-            }
-
-            /* Hacer las imágenes más pequeñas y responsivas */
-            .menu-item img, .gallery-item img {
-                max-width: 100%;
-                height: auto;
-            }
-
-            /* Menú lateral en dispositivos móviles */
-            .menu {
-                position: fixed;
-                top: 0;
-                right: -250px;
-                width: 250px;
-                height: 100%;
-                background-color: #2c3e50;
-                display: flex;
-                flex-direction: column;
-                align-items: center;
-                justify-content: center;
-                transition: all 0.3s ease;
-                padding-top: 50px;
-            }
-
-            .menu.show {
-                right: 0;
-            }
-
-            .menu a {
-                color: white;
-                text-decoration: none;
-                font-size: 1.5rem;
-                margin: 15px 0;
-                padding: 10px;
-                transition: all 0.3s;
-            }
-
-            /* Subrayado al hacer hover */
-            .menu a:hover {
-                text-decoration: underline;
-            }
-
-            /* Botón de hamburguesa */
-            .menu-icon {
-                display: block;
-                cursor: pointer;
-                z-index: 20;
-                position: absolute;
-                top: 20px;
-                left: 20px;
-            }
-
-            .menu-icon div {
-                width: 30px;
-                height: 4px;
-                background-color: white;
-                margin: 6px 0;
-                transition: all 0.3s ease;
-            }
+        .disponible {
+            background: #e0ffe0;
         }
-
     </style>
+    <script src="https://cdn.sheetjs.com/xlsx-latest/package/dist/xlsx.full.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 </head>
 <body>
+    <h1>Sistema Unificado</h1>
+    <div class="area-menu" id="areaMenu">
+        <button class="area-btn" onclick="mostrarModulo('hotel')">Hotel / Recepción</button>
+        <button class="area-btn" onclick="mostrarModulo('cocina')">Cocina</button>
+        <button class="area-btn" onclick="mostrarModulo('bar')">Bar</button>
+    </div>
 
-<!-- Header -->
-<header>
-    <img src="https://i.imgur.com/eg7YiiQ.png" alt="Logo de Sorbos y Sonrisas" class="logo">
-    <nav>
-        <!-- Icono de hamburguesa para abrir el menú -->
-        <div class="menu-icon" onclick="toggleMenu()">
-            <div></div>
-            <div></div>
-            <div></div>
+    <!-- Hotel / Recepción -->
+    <div class="modulo" id="moduloHotel">
+        <button class="volver-btn" onclick="volverMenu()">Volver al menú</button>
+        <h2>Agenda de Habitaciones</h2>
+        <!-- ...copia aquí el contenido de hotel.html, ajustando los IDs para evitar conflictos... -->
+        <div class="actions">
+            <button class="clean-btn" onclick="limpiarAgenda()">Limpiar Agenda</button>
+            <button class="report-btn" onclick="generarInforme()">Generar Informe</button>
+            <input type="date" id="fechaConsultaHotel" style="margin-left:16px;">
+            <button onclick="verDisponiblesPorFecha()">Ver disponibles por fecha</button>
+            <input type="text" id="busquedaHotel" placeholder="Buscar por nombre o celular" style="margin-left:16px;">
+            <button onclick="buscarReserva()">Buscar</button>
+            <button onclick="exportarExcel()" style="margin-left:16px;">Exportar Excel</button>
         </div>
-        <!-- Menú que aparece en el lado derecho -->
-        <div class="menu" id="mobileMenu">
-            <a href="#home">Inicio</a>
-            <a href="#menu">Menú</a>
-            <a href="#gallery">Galería</a>
-            <a href="#contact">Contacto</a>
+        <table id="tablaHabitacionesHotel">
+            <thead>
+                <tr>
+                    <th>Habitación</th>
+                    <th>Estado</th>
+                    <th>Reservado por</th>
+                    <th>Celular</th>
+                    <th>Fecha de reserva</th>
+                    <th>Acción</th>
+                </tr>
+            </thead>
+            <tbody id="habitacionesBodyHotel">
+            </tbody>
+        </table>
+        <!-- ...modales e informes igual que hotel.html, cambiando IDs por Hotel... -->
+        <!-- Modal para datos del cliente -->
+        <div class="modal-bg" id="modalBgHotel">
+            <div class="modal">
+                <h3>Datos del Cliente</h3>
+                <form id="formReservaHotel" onsubmit="confirmarReserva(event)">
+                    <label for="nombreHotel">Nombre:</label>
+                    <input type="text" id="nombreHotel" required>
+                    <label for="celularHotel">Celular:</label>
+                    <input type="text" id="celularHotel" required pattern="[0-9]{7,15}">
+                    <label for="fechaReservaHotel">Fecha de reserva:</label>
+                    <input type="date" id="fechaReservaHotel" required>
+                    <label for="notaHotel">Observaciones:</label>
+                    <input type="text" id="notaHotel">
+                    <div class="modal-actions">
+                        <button type="button" onclick="cerrarModal()">Cancelar</button>
+                        <button type="submit">Confirmar</button>
+                    </div>
+                </form>
+            </div>
         </div>
-    </nav>
-    <h1>Sorbos y Sonrisas</h1>
-    <p>Un ambiente tranquilo rodeado de árboles, donde encuentras diferentes bebidas, snacks y deliciosos postres.</p>
-</header>
-
-<!-- Menu Section -->
-<section class="menu-section" id="menu">
-    <h2>Explora Nuestro Menú</h2>
-    <div class="menu-categories">
-        <div class="menu-item">
-            <a href="https://i.imgur.com/dSDUdcj.jpg" target="_blank"><img src="https://i.imgur.com/dSDUdcj.jpg" alt="Menú 1"></a>
-            <h3>Menú 1</h3>
+        <!-- Informe -->
+        <div id="informeHotel" style="display:none;">
+            <h2>Informe de Reservas</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Habitación</th>
+                        <th>Cliente</th>
+                        <th>Celular</th>
+                        <th>Fecha</th>
+                        <th>Nota</th>
+                    </tr>
+                </thead>
+                <tbody id="informeBodyHotel">
+                </tbody>
+            </table>
+            <button onclick="cerrarInforme()">Cerrar</button>
         </div>
-        <div class="menu-item">
-            <a href="https://i.imgur.com/YOzWioX.jpg" target="_blank"><img src="https://i.imgur.com/YOzWioX.jpg" alt="Menú 2"></a>
-            <h3>Menú 2</h3>
+        <!-- Historial de Reservas Eliminadas -->
+        <div id="historialHotel" style="display:none;">
+            <h2>Historial de Reservas Eliminadas</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Habitación</th>
+                        <th>Cliente</th>
+                        <th>Celular</th>
+                        <th>Fecha</th>
+                        <th>Nota</th>
+                    </tr>
+                </thead>
+                <tbody id="historialBodyHotel">
+                </tbody>
+            </table>
+            <button onclick="cerrarHistorial()">Cerrar</button>
+            <button onclick="eliminarHistorial()" style="margin-left:10px;">Eliminar historial</button>
+        </div>
+        <button onclick="mostrarHistorial()" style="margin-top:10px;">Ver historial de eliminadas</button>
+        <!-- Modal para editar/eliminar reservas futuras -->
+        <div class="modal-bg" id="modalEditBgHotel">
+            <div class="modal">
+                <h3>Reservas futuras de la habitación <span id="editHabNumHotel"></span></h3>
+                <div id="editReservasHotel"></div>
+                <button onclick="cerrarEditModal()">Cerrar</button>
+            </div>
         </div>
     </div>
-</section>
 
-<!-- Gallery Section -->
-<section class="gallery-section" id="gallery">
-    <h2>Galería de Nuestros Productos</h2>
-    <div class="gallery-items">
-        <div class="gallery-item">
-            <img src="https://i.imgur.com/b4Uw6wp.jpg" alt="Capuchino">
-        </div>
-        <div class="gallery-item">
-            <img src="https://i.imgur.com/pgxuVMl.jpg" alt="Bebida Especial">
-        </div>
-        <div class="gallery-item">
-            <img src="https://i.imgur.com/CBt83V3.jpg" alt="Tacos">
-        </div>
-        <div class="gallery-item">
-            <img src="https://i.imgur.com/IuW3hhc.jpg" alt="Tacos">
-        </div>
-        <div class="gallery-item">
-            <img src="https://i.imgur.com/FIN6iX6.jpg" alt="Frappe">
+    <!-- Cocina -->
+    <div class="modulo" id="moduloCocina">
+        <button class="volver-btn" onclick="volverMenu()">Volver al menú</button>
+        <h2>Inventario de Cocina</h2>
+        <div class="container" style="box-shadow:none;padding:0;max-width:100%;">
+            <div id="lowStockAlertCocina"></div>
+            <form id="addFormCocina">
+                <h3>Ingreso de Producto</h3>
+                <label>Nombre del producto</label>
+                <input type="text" id="addNameCocina" required>
+                <label>Cantidad</label>
+                <input type="number" id="addQtyCocina" min="1" required>
+                <button type="submit">Ingresar</button>
+            </form>
+            <form id="sellFormCocina">
+                <h3>Venta de Producto</h3>
+                <label>Producto</label>
+                <select id="sellNameCocina"></select>
+                <label>Cantidad a vender</label>
+                <input type="number" id="sellQtyCocina" min="1" required>
+                <button type="submit">Vender</button>
+            </form>
+            <h3>Informe de Inventario</h3>
+            <table id="inventoryTableCocina">
+                <thead>
+                    <tr><th>Producto</th><th>Cantidad</th></tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+            <button id="clearAllCocina" style="background:#e74c3c;margin-top:18px;">Borrar todo</button>
+            <button id="pdfVentasCocina" style="background:#27ae60;margin-top:18px;">Descargar informe de ventas de hoy (PDF)</button>
         </div>
     </div>
-</section>
 
-<!-- Contact Section -->
-<section id="contact">
-    <h2>Contáctanos</h2>
-    <p>Dirección: Machaquila</p>
-    <p>Teléfono: +50235714552</p>
-    <p>Horarios:  
-        Lunes a Miércoles: 4:30 PM - 9:30 PM<br>
-        Jueves: Cerrado<br>
-        Viernes: 4:30 PM - 9:30 PM<br>
-        Sábado y Domingo: 1:00 PM - 9:30 PM
-    </p>
+    <!-- Bar -->
+    <div class="modulo" id="moduloBar">
+        <button class="volver-btn" onclick="volverMenu()">Volver al menú</button>
+        <h2>Inventario de Bar</h2>
+        <div class="container" style="box-shadow:none;padding:0;max-width:100%;">
+            <div id="lowStockAlertBar"></div>
+            <form id="addFormBar">
+                <h3>Ingreso de Producto</h3>
+                <label>Nombre del producto</label>
+                <input type="text" id="addNameBar" required>
+                <label>Cantidad</label>
+                <input type="number" id="addQtyBar" min="1" required>
+                <button type="submit">Ingresar</button>
+            </form>
+            <form id="sellFormBar">
+                <h3>Venta de Producto</h3>
+                <label>Producto</label>
+                <select id="sellNameBar"></select>
+                <label>Cantidad a vender</label>
+                <input type="number" id="sellQtyBar" min="1" required>
+                <button type="submit">Vender</button>
+            </form>
+            <h3>Informe de Inventario</h3>
+            <table id="inventoryTableBar">
+                <thead>
+                    <tr><th>Producto</th><th>Cantidad</th></tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+            <button id="clearAllBar" style="background:#e74c3c;margin-top:18px;">Borrar todo</button>
+            <button id="pdfVentasBar" style="background:#27ae60;margin-top:18px;">Descargar informe de ventas de hoy (PDF)</button>
+        </div>
+    </div>
 
-    <!-- Google Maps Embed -->
-    <h3>Visítanos:</h3>
-    <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3925.497550929398!2d-89.454671!3d16.3956587!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x8f607dd9179675a5%3A0xfb2698980e8930e!2sMachaquil%C3%A1%2017012!5e0!3m2!1ses!2sgt!4v1685597067069!5m2!1ses!2sgt" width="100%" height="450" style="border:0;" allowfullscreen="" loading="lazy"></iframe>
-
-    <!-- WhatsApp Order/Reservation Button -->
-    <h3>Haz tu Pedido o Reserva para Evento</h3>
-    <p>Escribe tu mensaje a continuación y haz clic en el botón para enviarlo a WhatsApp:</p>
-    <textarea id="whatsappMessage" placeholder="Escribe tu pedido o reserva aquí..." rows="4"></textarea>
-    <button onclick="sendMessage()">Enviar Pedido/Reservación</button>
-</section>
-
-<!-- Footer -->
-<footer>
-    <img src="https://i.imgur.com/eg7YiiQ.png" alt="Logo de Sorbos y Sonrisas" class="logo">
-    <p>&copy; 2023 Sorbos y Sonrisas | Todos los derechos reservados.</p>
-    <p>Desarrollado por <a href="#">J&S STUDIOS</a></p>
-</footer>
-
-<script>
-    function sendMessage() {
-        var message = document.getElementById("whatsappMessage").value;
-        var whatsappLink = "https://wa.me/+50235714552?text=" + encodeURIComponent("Hola, me gustaría hacer un pedido o reservar: " + message);
-        window.open(whatsappLink, "_blank");
+    <script>
+    // Menú principal y navegación
+    function mostrarModulo(area) {
+        document.getElementById('areaMenu').style.display = 'none';
+        document.getElementById('moduloHotel').style.display = 'none';
+        document.getElementById('moduloCocina').style.display = 'none';
+        document.getElementById('moduloBar').style.display = 'none';
+        if(area === 'hotel') {
+            document.getElementById('moduloHotel').style.display = 'block';
+            renderTablaHotel();
+        }
+        if(area === 'cocina') document.getElementById('moduloCocina').style.display = 'block';
+        if(area === 'bar') document.getElementById('moduloBar').style.display = 'block';
+    }
+    function volverMenu() {
+        document.getElementById('areaMenu').style.display = 'flex';
+        document.getElementById('moduloHotel').style.display = 'none';
+        document.getElementById('moduloCocina').style.display = 'none';
+        document.getElementById('moduloBar').style.display = 'none';
     }
 
-    function toggleMenu() {
-        document.getElementById("mobileMenu").classList.toggle("show");
+    // --- Lógica módulo Hotel ---
+    const habitacionesHotel = {};
+    for(let i=1; i<=20; i++) habitacionesHotel[i] = [];
+    function cargarReservasHotel() {
+        const data = localStorage.getItem('reservasHotel');
+        let obj = {};
+        if (data) {
+            try {
+                obj = JSON.parse(data);
+            } catch (e) {
+                obj = {};
+            }
+        }
+        for (let i = 1; i <= 20; i++) {
+            if (!Array.isArray(obj[i])) obj[i] = [];
+            habitacionesHotel[i] = obj[i];
+        }
     }
-</script>
+    function guardarReservasHotel() {
+        localStorage.setItem('reservasHotel', JSON.stringify(habitacionesHotel));
+    }
+    cargarReservasHotel();
 
+    function renderTablaHotel() {
+        const tbody = document.getElementById('habitacionesBodyHotel');
+        tbody.innerHTML = '';
+        const hoy = new Date().toISOString().slice(0,10);
+        for(let i=1; i<=20; i++) {
+            const reservas = habitacionesHotel[i];
+            let proxima = null;
+            if (reservas.length > 0) {
+                const ordenadas = reservas.slice().sort((a, b) => a.fecha.localeCompare(b.fecha));
+                proxima = ordenadas.find(r => r.fecha >= hoy);
+                if (!proxima) proxima = ordenadas[ordenadas.length - 1];
+            }
+            const estado = proxima ? (proxima.fecha === hoy ? 'Reservada hoy' : (proxima.fecha > hoy ? 'Reservada futura' : 'Reservada pasada')) : 'Disponible';
+            const nombre = proxima ? proxima.nombre : '-';
+            const celular = proxima ? proxima.celular : '-';
+            const fecha = proxima ? new Date(proxima.fecha).toLocaleDateString('es-ES') : '-';
+            const tr = document.createElement('tr');
+            tr.className = proxima ? (proxima.fecha >= hoy ? 'reservada' : 'disponible') : 'disponible';
+            tbody.appendChild(tr);
+            tr.innerHTML = `
+                <td>${i}</td>
+                <td>${estado}</td>
+                <td>${nombre}</td>
+                <td>${celular}</td>
+                <td>${fecha}</td>
+                <td></td>
+            `;
+            const accionTd = tr.querySelector('td:last-child');
+            const btnAccion = document.createElement('button');
+            btnAccion.textContent = estado === 'Disponible' ? 'Reservar' : 'Liberar';
+            btnAccion.onclick = function() {
+                if(estado === 'Disponible') {
+                    abrirReservaHotel(i);
+                } else if (proxima && proxima.fecha === hoy) {
+                    liberarHotel(i);
+                } else {
+                    alert('Solo puedes liberar la reserva de hoy desde aquí. Para otras fechas, usa "Editar futuras".');
+                }
+            };
+            accionTd.appendChild(btnAccion);
+            const btnVer = document.createElement('button');
+            btnVer.textContent = 'Ver reservas';
+            btnVer.style.marginLeft = '6px';
+            btnVer.onclick = function() {
+                verReservasHotel(i);
+            };
+            accionTd.appendChild(btnVer);
+            const btnEdit = document.createElement('button');
+            btnEdit.textContent = 'Editar futuras';
+            btnEdit.style.marginLeft = '6px';
+            btnEdit.onclick = function() {
+                editarReservasFuturasHotel(i);
+            };
+            accionTd.appendChild(btnEdit);
+        }
+    }
+    let reservaHabHotel = null;
+    function abrirReservaHotel(num) {
+        reservaHabHotel = num;
+        document.getElementById('modalBgHotel').style.display = 'flex';
+        document.getElementById('nombreHotel').value = '';
+        document.getElementById('celularHotel').value = '';
+        document.getElementById('fechaReservaHotel').value = '';
+        document.getElementById('notaHotel').value = '';
+        document.getElementById('nombreHotel').focus();
+    }
+    function cerrarModal() {
+        document.getElementById('modalBgHotel').style.display = 'none';
+        reservaHabHotel = null;
+    }
+    function confirmarReserva(e) {
+        e.preventDefault();
+        const nombre = document.getElementById('nombreHotel').value.trim();
+        const celular = document.getElementById('celularHotel').value.trim();
+        const fecha = document.getElementById('fechaReservaHotel').value;
+        const nota = document.getElementById('notaHotel').value.trim();
+        if(!nombre || !celular || !fecha) return;
+        if(habitacionesHotel[reservaHabHotel].some(r => r.fecha === fecha)) {
+            alert('Ya existe una reserva para esa fecha en esta habitación.');
+            return;
+        }
+        habitacionesHotel[reservaHabHotel].push({nombre, celular, fecha, nota});
+        guardarReservasHotel();
+        cerrarModal();
+        renderTablaHotel();
+    }
+    let historialReservasHotel = JSON.parse(localStorage.getItem('historialReservasHotel') || '[]');
+    function guardarHistorialHotel() {
+        localStorage.setItem('historialReservasHotel', JSON.stringify(historialReservasHotel));
+    }
+    function mostrarHistorial() {
+        const div = document.getElementById('historialHotel');
+        const tbody = document.getElementById('historialBodyHotel');
+        tbody.innerHTML = '';
+        historialReservasHotel.forEach(r => {
+            const tr = document.createElement('tr');
+            tr.innerHTML = 
+                `<td>${r.habitacion}</td>
+                <td>${r.nombre}</td>
+                <td>${r.celular}</td>
+                <td>${new Date(r.fecha).toLocaleDateString('es-ES')}</td>
+                <td>${r.nota || ''}</td>`;
+            tbody.appendChild(tr);
+        });
+        div.style.display = 'block';
+        window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
+    }
+    function cerrarHistorial() {
+        document.getElementById('historialHotel').style.display = 'none';
+    }
+    function liberarHotel(num) {
+        if(!confirm('¿Seguro que quieres liberar la reserva de hoy?')) return;
+        const hoy = new Date().toISOString().slice(0,10);
+        const reserva = habitacionesHotel[num].find(r => r.fecha === hoy);
+        if(reserva) {
+            historialReservasHotel.push({
+                habitacion: num,
+                nombre: reserva.nombre,
+                celular: reserva.celular,
+                fecha: reserva.fecha,
+                nota: reserva.nota
+            });
+            guardarHistorialHotel();
+        }
+        habitacionesHotel[num] = habitacionesHotel[num].filter(r => r.fecha !== hoy);
+        guardarReservasHotel();
+        renderTablaHotel();
+    }
+    function limpiarAgenda() {
+        if(confirm('¿Seguro que quieres limpiar todas las reservas?')) {
+            for(let i=1; i<=20; i++) habitacionesHotel[i] = [];
+            guardarReservasHotel();
+            renderTablaHotel();
+        }
+    }
+    function generarInforme() {
+        const informe = document.getElementById('informeHotel');
+        const informeBody = document.getElementById('informeBodyHotel');
+        informeBody.innerHTML = '';
+        for(let i=1; i<=20; i++) {
+            habitacionesHotel[i].forEach(r => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = 
+                    `<td>${i}</td>
+                    <td>${r.nombre}</td>
+                    <td>${r.celular}</td>
+                    <td>${new Date(r.fecha).toLocaleDateString('es-ES')}</td>
+                    <td>${r.nota || ''}</td>`;
+                informeBody.appendChild(tr);
+            });
+        }
+        informe.style.display = 'block';
+        window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
+    }
+    function cerrarInforme() {
+        document.getElementById('informeHotel').style.display = 'none';
+    }
+    function verReservasHotel(num) {
+        const reservas = habitacionesHotel[num];
+        if(reservas.length === 0) {
+            alert('No hay reservas para esta habitación.');
+            return;
+        }
+        let msg = `Reservas para habitación ${num}:\n\n`;
+        reservas.forEach(r => {
+            msg += `- ${r.nombre} (${r.celular}) el ${new Date(r.fecha).toLocaleDateString('es-ES')}${r.nota ? ' | ' + r.nota : ''}\n`;
+        });
+        alert(msg);
+    }
+    function editarReservasFuturasHotel(num) {
+        const hoy = new Date().toISOString().slice(0,10);
+        const futuras = habitacionesHotel[num].filter(r => r.fecha !== hoy);
+        const cont = document.getElementById('editReservasHotel');
+        document.getElementById('editHabNumHotel').textContent = num;
+        cont.innerHTML = '';
+        if(futuras.length === 0) {
+            cont.innerHTML = '<p>No hay reservas futuras.</p>';
+        } else {
+            futuras.forEach((r, idx) => {
+                const div = document.createElement('div');
+                div.style.marginBottom = '10px';
+                div.innerHTML = 
+                    `<b>${r.nombre}</b> (${r.celular})<br>
+                    Fecha: ${new Date(r.fecha).toLocaleDateString('es-ES')}<br>
+                    Nota: ${r.nota || ''}<br>
+                    <button onclick="eliminarReservaFuturaHotel(${num}, '${r.fecha}')">Eliminar</button>`;
+                cont.appendChild(div);
+            });
+        }
+        document.getElementById('modalEditBgHotel').style.display = 'flex';
+    }
+    function eliminarReservaFuturaHotel(num, fecha) {
+        if(!confirm('¿Seguro que quieres eliminar esta reserva?')) return;
+        const reserva = habitacionesHotel[num].find(r => r.fecha === fecha);
+        if(reserva) {
+            historialReservasHotel.push({
+                habitacion: num,
+                nombre: reserva.nombre,
+                celular: reserva.celular,
+                fecha: reserva.fecha,
+                nota: reserva.nota
+            });
+            guardarHistorialHotel();
+        }
+        habitacionesHotel[num] = habitacionesHotel[num].filter(r => r.fecha !== fecha);
+        guardarReservasHotel();
+        editarReservasFuturasHotel(num);
+        renderTablaHotel();
+    }
+    function cerrarEditModal() {
+        document.getElementById('modalEditBgHotel').style.display = 'none';
+    }
+    function buscarReserva() {
+        const q = document.getElementById('busquedaHotel').value.trim().toLowerCase();
+        if(!q) {
+            renderTablaHotel();
+            return;
+        }
+        const tbody = document.getElementById('habitacionesBodyHotel');
+        tbody.innerHTML = '';
+        for(let i=1; i<=20; i++) {
+            const reservas = habitacionesHotel[i].filter(r =>
+                r.nombre.toLowerCase().includes(q) ||
+                r.celular.toLowerCase().includes(q)
+            );
+            reservas.forEach(r => {
+                const tr = document.createElement('tr');
+                tr.className = r.fecha === new Date().toISOString().slice(0,10) ? 'reservada' : 'disponible';
+                tr.innerHTML = 
+                    `<td>${i}</td>
+                    <td>${r.fecha === new Date().toISOString().slice(0,10) ? 'Reservada' : 'Disponible'}</td>
+                    <td>${r.nombre}</td>
+                    <td>${r.celular}</td>
+                    <td>${new Date(r.fecha).toLocaleDateString('es-ES')}</td>
+                    <td>${r.nota || ''}</td>`;
+                tbody.appendChild(tr);
+            });
+        }
+    }
+    function exportarExcel() {
+        let datos = [["Habitación", "Cliente", "Celular", "Fecha", "Nota"]];
+        for(let i=1; i<=20; i++) {
+            habitacionesHotel[i].forEach(r => {
+                datos.push([
+                    i,
+                    r.nombre,
+                    r.celular,
+                    new Date(r.fecha).toLocaleDateString('es-ES'),
+                    r.nota || ''
+                ]);
+            });
+        }
+        const wb = XLSX.utils.book_new();
+        const ws = XLSX.utils.aoa_to_sheet(datos);
+        XLSX.utils.book_append_sheet(wb, ws, "Reservas");
+        XLSX.writeFile(wb, "informe_reservas.xlsx");
+    }
+    function verDisponiblesPorFecha() {
+        const fecha = document.getElementById('fechaConsultaHotel').value;
+        if (!fecha) {
+            alert('Selecciona una fecha para consultar.');
+            return;
+        }
+        let disponibles = [];
+        for (let i = 1; i <= 20; i++) {
+            const reservas = habitacionesHotel[i];
+            const reservada = reservas.some(r => r.fecha === fecha);
+            if (!reservada) disponibles.push(i);
+        }
+        if (disponibles.length === 0) {
+            alert('No hay habitaciones disponibles para esa fecha.');
+        } else {
+            alert('Habitaciones disponibles para ' + new Date(fecha).toLocaleDateString('es-ES') + ':\n\n' + disponibles.join(', '));
+        }
+    }
+    function eliminarHistorial() {
+        if(confirm('¿Seguro que quieres eliminar todo el historial de reservas eliminadas?')) {
+            historialReservasHotel = [];
+            guardarHistorialHotel();
+            mostrarHistorial();
+        }
+    }
+    // Inicializar tabla al cargar la página
+    renderTablaHotel();
+    let inventarioCocina = [];
+    let ventasCocina = [];
+    const lowStockLimitCocina = 5;
+    function cargarDatosCocina() {
+        try {
+            inventarioCocina = JSON.parse(localStorage.getItem('inventario_cocina')) || [];
+        } catch(e) { inventarioCocina = []; }
+        try {
+            ventasCocina = JSON.parse(localStorage.getItem('ventas_cocina')) || [];
+        } catch(e) { ventasCocina = []; }
+    }
+    function guardarInventarioCocina() {
+        localStorage.setItem('inventario_cocina', JSON.stringify(inventarioCocina));
+    }
+    function guardarVentasCocina() {
+        localStorage.setItem('ventas_cocina', JSON.stringify(ventasCocina));
+    }
+    function actualizarTablaCocina() {
+        const tbody = document.querySelector('#inventoryTableCocina tbody');
+        tbody.innerHTML = '';
+        inventarioCocina.forEach(item => {
+            const tr = document.createElement('tr');
+            if (item.cantidad <= lowStockLimitCocina) tr.classList.add('low-stock');
+            tr.innerHTML = `<td>${item.nombre}</td><td>${item.cantidad}</td>`;
+            tbody.appendChild(tr);
+        });
+        guardarInventarioCocina();
+    }
+    function actualizarSelectCocina() {
+        const select = document.getElementById('sellNameCocina');
+        select.innerHTML = '';
+        inventarioCocina.forEach(item => {
+            const option = document.createElement('option');
+            option.value = item.nombre;
+            option.textContent = item.nombre;
+            select.appendChild(option);
+        });
+    }
+    function mostrarAlertaStockBajoCocina() {
+        const alertDiv = document.getElementById('lowStockAlertCocina');
+        const bajos = inventarioCocina.filter(item => item.cantidad <= lowStockLimitCocina);
+        if (bajos.length > 0) {
+            alertDiv.innerHTML = `<div class='alert'>¡Stock bajo en: ${bajos.map(i => i.nombre).join(', ')}!</div>`;
+        } else {
+            alertDiv.innerHTML = '';
+        }
+    }
+    document.getElementById('addFormCocina').onsubmit = function(e) {
+        e.preventDefault();
+        const nombre = document.getElementById('addNameCocina').value.trim();
+        const cantidad = parseInt(document.getElementById('addQtyCocina').value);
+        if (!nombre || cantidad < 1) return;
+        let prod = inventarioCocina.find(i => i.nombre === nombre);
+        if (prod) {
+            prod.cantidad += cantidad;
+        } else {
+            inventarioCocina.push({ nombre, cantidad });
+        }
+        actualizarTablaCocina();
+        actualizarSelectCocina();
+        mostrarAlertaStockBajoCocina();
+        this.reset();
+    };
+    document.getElementById('sellFormCocina').onsubmit = function(e) {
+        e.preventDefault();
+        const nombre = document.getElementById('sellNameCocina').value;
+        const cantidad = parseInt(document.getElementById('sellQtyCocina').value);
+        let prod = inventarioCocina.find(i => i.nombre === nombre);
+        if (!prod || cantidad < 1 || cantidad > prod.cantidad) {
+            alert('Cantidad inválida o producto sin stock suficiente.');
+            return;
+        }
+        prod.cantidad -= cantidad;
+        ventasCocina.push({
+            nombre,
+            cantidad,
+            fecha: new Date().toISOString()
+        });
+        guardarInventarioCocina();
+        guardarVentasCocina();
+        actualizarTablaCocina();
+        mostrarAlertaStockBajoCocina();
+        this.reset();
+    };
+    document.getElementById('clearAllCocina').onclick = function() {
+        if (confirm('¿Seguro que quieres borrar todo el inventario?')) {
+            inventarioCocina = [];
+            ventasCocina = [];
+            guardarInventarioCocina();
+            guardarVentasCocina();
+            actualizarTablaCocina();
+            actualizarSelectCocina();
+            mostrarAlertaStockBajoCocina();
+        }
+    };
+    document.getElementById('pdfVentasCocina').onclick = function() {
+        generarPDFVentasHoyCocina();
+    };
+    function generarPDFVentasHoyCocina() {
+        const hoy = new Date().toISOString().slice(0,10);
+        const ventasHoy = ventasCocina.filter(v => v.fecha.slice(0,10) === hoy);
+        if (ventasHoy.length === 0) {
+            alert('No hay ventas registradas hoy.');
+            return;
+        }
+        const { jsPDF } = window.jspdf;
+        const doc = new jsPDF();
+        doc.setFontSize(16);
+        doc.text('Informe de ventas - ' + hoy, 10, 15);
+        doc.setFontSize(12);
+        let y = 30;
+        doc.text('Producto', 10, y);
+        doc.text('Cantidad', 80, y);
+        doc.text('Hora', 130, y);
+        y += 8;
+        ventasHoy.forEach(v => {
+            doc.text(v.nombre, 10, y);
+            doc.text(String(v.cantidad), 80, y);
+            doc.text(new Date(v.fecha).toLocaleTimeString(), 130, y);
+            y += 8;
+        });
+        doc.save('ventas_cocina_' + hoy + '.pdf');
+    }
+    function programarPDFAutomaticoCocina() {
+        function checkHora() {
+            const ahora = new Date();
+            if (ahora.getHours() === 21 && ahora.getMinutes() === 0) {
+                generarPDFVentasHoyCocina();
+            }
+        }
+        setInterval(checkHora, 60000);
+    }
+    cargarDatosCocina();
+    actualizarTablaCocina();
+    actualizarSelectCocina();
+    mostrarAlertaStockBajoCocina();
+    programarPDFAutomaticoCocina();
+
+    // --- Lógica módulo Bar ---
+    let inventarioBar = [];
+    let ventasBar = [];
+    const lowStockLimitBar = 5;
+    function cargarDatosBar() {
+        try {
+            inventarioBar = JSON.parse(localStorage.getItem('inventario_bar')) || [];
+        } catch(e) { inventarioBar = []; }
+        try {
+            ventasBar = JSON.parse(localStorage.getItem('ventas_bar')) || [];
+        } catch(e) { ventasBar = []; }
+    }
+    function guardarInventarioBar() {
+        localStorage.setItem('inventario_bar', JSON.stringify(inventarioBar));
+    }
+    function guardarVentasBar() {
+        localStorage.setItem('ventas_bar', JSON.stringify(ventasBar));
+    }
+    function actualizarTablaBar() {
+        const tbody = document.querySelector('#inventoryTableBar tbody');
+        tbody.innerHTML = '';
+        inventarioBar.forEach(item => {
+            const tr = document.createElement('tr');
+            if (item.cantidad <= lowStockLimitBar) tr.classList.add('low-stock');
+            tr.innerHTML = `<td>${item.nombre}</td><td>${item.cantidad}</td>`;
+            tbody.appendChild(tr);
+        });
+        guardarInventarioBar();
+    }
+    function actualizarSelectBar() {
+        const select = document.getElementById('sellNameBar');
+        select.innerHTML = '';
+        inventarioBar.forEach(item => {
+            const option = document.createElement('option');
+            option.value = item.nombre;
+            option.textContent = item.nombre;
+            select.appendChild(option);
+        });
+    }
+    function mostrarAlertaStockBajoBar() {
+        const alertDiv = document.getElementById('lowStockAlertBar');
+        const bajos = inventarioBar.filter(item => item.cantidad <= lowStockLimitBar);
+        if (bajos.length > 0) {
+            alertDiv.innerHTML = `<div class='alert'>¡Stock bajo en: ${bajos.map(i => i.nombre).join(', ')}!</div>`;
+        } else {
+            alertDiv.innerHTML = '';
+        }
+    }
+    document.getElementById('addFormBar').onsubmit = function(e) {
+        e.preventDefault();
+        const nombre = document.getElementById('addNameBar').value.trim();
+        const cantidad = parseInt(document.getElementById('addQtyBar').value);
+        if (!nombre || cantidad < 1) return;
+        let prod = inventarioBar.find(i => i.nombre === nombre);
+        if (prod) {
+            prod.cantidad += cantidad;
+        } else {
+            inventarioBar.push({ nombre, cantidad });
+        }
+        actualizarTablaBar();
+        actualizarSelectBar();
+        mostrarAlertaStockBajoBar();
+        this.reset();
+    };
+    document.getElementById('sellFormBar').onsubmit = function(e) {
+        e.preventDefault();
+        const nombre = document.getElementById('sellNameBar').value;
+        const cantidad = parseInt(document.getElementById('sellQtyBar').value);
+        let prod = inventarioBar.find(i => i.nombre === nombre);
+        if (!prod || cantidad < 1 || cantidad > prod.cantidad) {
+            alert('Cantidad inválida o producto sin stock suficiente.');
+            return;
+        }
+        prod.cantidad -= cantidad;
+        ventasBar.push({
+            nombre,
+            cantidad,
+            fecha: new Date().toISOString()
+        });
+        guardarInventarioBar();
+        guardarVentasBar();
+        actualizarTablaBar();
+        mostrarAlertaStockBajoBar();
+        this.reset();
+    };
+    document.getElementById('clearAllBar').onclick = function() {
+        if (confirm('¿Seguro que quieres borrar todo el inventario?')) {
+            inventarioBar = [];
+            ventasBar = [];
+            guardarInventarioBar();
+            guardarVentasBar();
+            actualizarTablaBar();
+            actualizarSelectBar();
+            mostrarAlertaStockBajoBar();
+        }
+    };
+    document.getElementById('pdfVentasBar').onclick = function() {
+        generarPDFVentasHoyBar();
+    };
+    function generarPDFVentasHoyBar() {
+        const hoy = new Date().toISOString().slice(0,10);
+        const ventasHoy = ventasBar.filter(v => v.fecha.slice(0,10) === hoy);
+        if (ventasHoy.length === 0) {
+            alert('No hay ventas registradas hoy.');
+            return;
+        }
+        const { jsPDF } = window.jspdf;
+        const doc = new jsPDF();
+        doc.setFontSize(16);
+        doc.text('Informe de ventas - ' + hoy, 10, 15);
+        doc.setFontSize(12);
+        let y = 30;
+        doc.text('Producto', 10, y);
+        doc.text('Cantidad', 80, y);
+        doc.text('Hora', 130, y);
+        y += 8;
+        ventasHoy.forEach(v => {
+            doc.text(v.nombre, 10, y);
+            doc.text(String(v.cantidad), 80, y);
+            doc.text(new Date(v.fecha).toLocaleTimeString(), 130, y);
+            y += 8;
+        });
+        doc.save('ventas_bar_' + hoy + '.pdf');
+    }
+    function programarPDFAutomaticoBar() {
+        function checkHora() {
+            const ahora = new Date();
+            if (ahora.getHours() === 21 && ahora.getMinutes() === 0) {
+                generarPDFVentasHoyBar();
+            }
+        }
+        setInterval(checkHora, 60000);
+    }
+    cargarDatosBar();
+    actualizarTablaBar();
+    actualizarSelectBar();
+    mostrarAlertaStockBajoBar();
+    programarPDFAutomaticoBar();
+    </script>
 </body>
 </html>
