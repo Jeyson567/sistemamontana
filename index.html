@@ -115,7 +115,10 @@
                     <th>Estado</th>
                     <th>Reservado por</th>
                     <th>Celular</th>
-                    <th>Fecha de reserva</th>
+                    <th>Ingreso</th>
+                    <th>Salida</th>
+                    <th>Pago</th>
+                    <th>Check-in</th>
                     <th>Acción</th>
                 </tr>
             </thead>
@@ -132,8 +135,10 @@
                     <input type="text" id="nombreHotel" required>
                     <label for="celularHotel">Celular:</label>
                     <input type="text" id="celularHotel" required pattern="[0-9]{7,15}">
-                    <label for="fechaReservaHotel">Fecha de reserva:</label>
-                    <input type="date" id="fechaReservaHotel" required>
+                    <label for="ingresoHotel">Fecha de ingreso:</label>
+                    <input type="date" id="ingresoHotel" required>
+                    <label for="salidaHotel">Fecha de salida:</label>
+                    <input type="date" id="salidaHotel" required>
                     <label for="notaHotel">Observaciones:</label>
                     <input type="text" id="notaHotel">
                     <div class="modal-actions">
@@ -152,7 +157,8 @@
                         <th>Habitación</th>
                         <th>Cliente</th>
                         <th>Celular</th>
-                        <th>Fecha</th>
+                        <th>Ingreso</th>
+                        <th>Salida</th>
                         <th>Nota</th>
                     </tr>
                 </thead>
@@ -309,25 +315,41 @@
         const hoy = new Date().toISOString().slice(0,10);
         for(let i=1; i<=20; i++) {
             const reservas = habitacionesHotel[i];
-            let proxima = null;
-            if (reservas.length > 0) {
-                const ordenadas = reservas.slice().sort((a, b) => a.fecha.localeCompare(b.fecha));
-                proxima = ordenadas.find(r => r.fecha >= hoy);
-                if (!proxima) proxima = ordenadas[ordenadas.length - 1];
-            }
-            const estado = proxima ? (proxima.fecha === hoy ? 'Reservada hoy' : (proxima.fecha > hoy ? 'Reservada futura' : 'Reservada pasada')) : 'Disponible';
-            const nombre = proxima ? proxima.nombre : '-';
-            const celular = proxima ? proxima.celular : '-';
-            const fecha = proxima ? new Date(proxima.fecha).toLocaleDateString('es-ES') : '-';
+            // Buscar reserva activa hoy (multi-día)
+            let activa = reservas.find(r => {
+                const ini = r.ingreso;
+                const fin = r.salida;
+                return hoy >= ini && hoy <= fin;
+            });
+            // Buscar próxima futura
+            let futura = reservas.filter(r => r.ingreso > hoy)
+                .sort((a,b) => a.ingreso.localeCompare(b.ingreso))[0];
+            // Si no hay activa ni futura, mostrar la última pasada
+            let pasada = reservas.filter(r => r.salida < hoy)
+                .sort((a,b) => b.salida.localeCompare(a.salida))[0];
+            let mostrar = activa || futura || pasada;
+            let estado = 'Disponible';
+            if (activa) estado = 'Reservada hoy';
+            else if (futura) estado = 'Reservada futura';
+            else if (pasada) estado = 'Reservada pasada';
+            const nombre = mostrar ? mostrar.nombre : '-';
+            const celular = mostrar ? mostrar.celular : '-';
+            const ingreso = mostrar ? (mostrar.ingreso ? new Date(mostrar.ingreso).toLocaleDateString('es-ES') : '-') : '-';
+            const salida = mostrar ? (mostrar.salida ? new Date(mostrar.salida).toLocaleDateString('es-ES') : '-') : '-';
+            const pago = activa ? (activa.pago || 'Pendiente') : '-';
+            const checkin = activa ? (activa.checkin ? 'Sí' : 'No') : '-';
             const tr = document.createElement('tr');
-            tr.className = proxima ? (proxima.fecha >= hoy ? 'reservada' : 'disponible') : 'disponible';
+            tr.className = activa ? 'reservada' : 'disponible';
             tbody.appendChild(tr);
             tr.innerHTML = `
                 <td>${i}</td>
                 <td>${estado}</td>
                 <td>${nombre}</td>
                 <td>${celular}</td>
-                <td>${fecha}</td>
+                <td>${ingreso}</td>
+                <td>${salida}</td>
+                <td><button onclick="togglePago(${i})"${!activa?' disabled':''}>${pago}</button></td>
+                <td><button onclick="toggleCheckin(${i})"${!activa?' disabled':''}>${checkin}</button></td>
                 <td></td>
             `;
             const accionTd = tr.querySelector('td:last-child');
@@ -336,10 +358,352 @@
             btnAccion.onclick = function() {
                 if(estado === 'Disponible') {
                     abrirReservaHotel(i);
-                } else if (proxima && proxima.fecha === hoy) {
+                } else if (activa) {
                     liberarHotel(i);
                 } else {
-                    alert('Solo puedes liberar la reserva de hoy desde aquí. Para otras fechas, usa "Editar futuras".');
+                    alert('Solo puedes liberar la reserva activa de hoy. Para otras fechas, usa "Editar futuras".');
+                }
+            };
+            accionTd.appendChild(btnAccion);
+            const btnVer = document.createElement('button');
+            btnVer.textContent = 'Ver reservas';
+            btnVer.style.marginLeft = '6px';
+            btnVer.onclick = function() {
+                verReservasHotel(i);
+            };
+            accionTd.appendChild(btnVer);
+            const btnEdit = document.createElement('button');
+            btnEdit.textContent = 'Editar futuras';
+            btnEdit.style.marginLeft = '6px';
+            btnEdit.onclick = function() {
+                editarReservasFuturasHotel(i);
+            };
+            accionTd.appendChild(btnEdit);
+        }
+    }
+
+    // ...eliminado, ya está declarado arriba...
+    function abrirReservaHotel(num) {
+        reservaHabHotel = num;
+        document.getElementById('modalBgHotel').style.display = 'flex';
+        document.getElementById('nombreHotel').value = '';
+        document.getElementById('celularHotel').value = '';
+        document.getElementById('ingresoHotel').value = '';
+        document.getElementById('salidaHotel').value = '';
+        document.getElementById('notaHotel').value = '';
+        document.getElementById('nombreHotel').focus();
+    }
+    function cerrarModal() {
+        document.getElementById('modalBgHotel').style.display = 'none';
+        reservaHabHotel = null;
+    }
+    function confirmarReserva(e) {
+        e.preventDefault();
+        const nombre = document.getElementById('nombreHotel').value.trim();
+        const celular = document.getElementById('celularHotel').value.trim();
+        const ingreso = document.getElementById('ingresoHotel').value;
+        const salida = document.getElementById('salidaHotel').value;
+        const nota = document.getElementById('notaHotel').value.trim();
+        if(!nombre || !celular || !ingreso || !salida) {
+            alert('Todos los campos son obligatorios.');
+            return;
+        }
+        // Normalizar fechas a formato YYYY-MM-DD
+        const ingresoNorm = new Date(ingreso).toISOString().slice(0,10);
+        const salidaNorm = new Date(salida).toISOString().slice(0,10);
+        if(salidaNorm < ingresoNorm) {
+            alert('La fecha de salida no puede ser anterior a la de ingreso.');
+            return;
+        }
+        // Verificar solapamiento de fechas (multi-día)
+        if(habitacionesHotel[reservaHabHotel].some(r => {
+            const ini = r.ingreso;
+            const fin = r.salida;
+            return (ingresoNorm <= fin && salidaNorm >= ini);
+        })) {
+            alert('Ya existe una reserva que se solapa con ese rango de fechas en esta habitación.');
+            return;
+        }
+        habitacionesHotel[reservaHabHotel].push({nombre, celular, ingreso: ingresoNorm, salida: salidaNorm, nota, pago:'Pendiente', checkin:false});
+        guardarReservasHotel();
+        cerrarModal();
+        renderTablaHotel();
+    }
+    function togglePago(num) {
+        const hoy = new Date().toISOString().slice(0,10);
+        let reservas = habitacionesHotel[num];
+        let activa = reservas.find(r => hoy >= r.ingreso && hoy <= r.salida);
+        if(activa) {
+            activa.pago = activa.pago === 'Pendiente' ? 'Cancelado' : 'Pendiente';
+            guardarReservasHotel();
+            renderTablaHotel();
+        }
+    }
+    function toggleCheckin(num) {
+        const hoy = new Date().toISOString().slice(0,10);
+        let reservas = habitacionesHotel[num];
+        let activa = reservas.find(r => hoy >= r.ingreso && hoy <= r.salida);
+        if(activa) {
+            activa.checkin = !activa.checkin;
+            guardarReservasHotel();
+            renderTablaHotel();
+        }
+    }
+    // ...eliminado, ya está declarado arriba...
+    function guardarHistorialHotel() {
+        localStorage.setItem('historialReservasHotel', JSON.stringify(historialReservasHotel));
+    }
+    function mostrarHistorial() {
+        const div = document.getElementById('historialHotel');
+        const tbody = document.getElementById('historialBodyHotel');
+        tbody.innerHTML = '';
+        historialReservasHotel.forEach(r => {
+            const tr = document.createElement('tr');
+            tr.innerHTML = 
+                `<td>${r.habitacion}</td>
+                <td>${r.nombre}</td>
+                <td>${r.celular}</td>
+                <td>${new Date(r.fecha).toLocaleDateString('es-ES')}</td>
+                <td>${r.nota || ''}</td>`;
+            tbody.appendChild(tr);
+        });
+        div.style.display = 'block';
+        window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
+    }
+    function cerrarHistorial() {
+        document.getElementById('historialHotel').style.display = 'none';
+    }
+    function liberarHotel(num) {
+        if(!confirm('¿Seguro que quieres liberar la reserva activa de hoy?')) return;
+        const hoy = new Date().toISOString().slice(0,10);
+        // Buscar la reserva activa hoy (multi-día)
+        const idx = habitacionesHotel[num].findIndex(r => hoy >= r.ingreso && hoy <= r.salida);
+        if(idx !== -1) {
+            const reserva = habitacionesHotel[num][idx];
+            historialReservasHotel.push({
+                habitacion: num,
+                nombre: reserva.nombre,
+                celular: reserva.celular,
+                fecha: hoy,
+                nota: reserva.nota
+            });
+            guardarHistorialHotel();
+            habitacionesHotel[num].splice(idx, 1);
+            guardarReservasHotel();
+            renderTablaHotel();
+        }
+    }
+    function limpiarAgenda() {
+        if(confirm('¿Seguro que quieres limpiar todas las reservas?')) {
+            for(let i=1; i<=20; i++) habitacionesHotel[i] = [];
+            guardarReservasHotel();
+            renderTablaHotel();
+        }
+    }
+    function generarInforme() {
+        const informe = document.getElementById('informeHotel');
+        const informeBody = document.getElementById('informeBodyHotel');
+        informeBody.innerHTML = '';
+        for(let i=1; i<=20; i++) {
+            habitacionesHotel[i].forEach(function(r) {
+                const tr = document.createElement('tr');
+                tr.innerHTML = 
+                    `<td>${i}</td>
+                    <td>${r.nombre}</td>
+                    <td>${r.celular}</td>
+                    <td>${r.ingreso ? new Date(r.ingreso).toLocaleDateString('es-ES') : '-'}</td>
+                    <td>${r.salida ? new Date(r.salida).toLocaleDateString('es-ES') : '-'}</td>
+                    <td>${r.nota || ''}</td>`;
+                informeBody.appendChild(tr);
+            });
+        }
+        informe.style.display = 'block';
+        window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
+    }
+    function cerrarInforme() {
+        document.getElementById('informeHotel').style.display = 'none';
+    }
+    function verReservasHotel(num) {
+        const reservas = habitacionesHotel[num];
+        if(reservas.length === 0) {
+            alert('No hay reservas para esta habitación.');
+            return;
+        }
+        let msg = `Reservas para habitación ${num}:\n\n`;
+        reservas.forEach(r => {
+            msg += `- ${r.nombre} (${r.celular}) del ${new Date(r.ingreso).toLocaleDateString('es-ES')} al ${new Date(r.salida).toLocaleDateString('es-ES')}${r.nota ? ' | ' + r.nota : ''}\n`;
+        });
+        alert(msg);
+    }
+    function editarReservasFuturasHotel(num) {
+        const hoy = new Date().toISOString().slice(0,10);
+        // Mostrar todas las reservas futuras (cuyo ingreso es después de hoy)
+        const futuras = habitacionesHotel[num].filter(r => r.ingreso > hoy);
+        const cont = document.getElementById('editReservasHotel');
+        document.getElementById('editHabNumHotel').textContent = num;
+        cont.innerHTML = '';
+        if(futuras.length === 0) {
+            cont.innerHTML = '<p>No hay reservas futuras.</p>';
+        } else {
+            futuras.forEach((r, idx) => {
+                const div = document.createElement('div');
+                div.style.marginBottom = '10px';
+                div.innerHTML = 
+                    `<b>${r.nombre}</b> (${r.celular})<br>
+                    Ingreso: ${new Date(r.ingreso).toLocaleDateString('es-ES')}, Salida: ${new Date(r.salida).toLocaleDateString('es-ES')}<br>
+                    Nota: ${r.nota || ''}<br>
+                    <button onclick="eliminarReservaFuturaHotel(${num}, '${r.ingreso}')">Eliminar</button>`;
+                cont.appendChild(div);
+            });
+        }
+        document.getElementById('modalEditBgHotel').style.display = 'flex';
+    }
+    function eliminarReservaFuturaHotel(num, ingreso) {
+        // Eliminar por ingreso para multi-día
+        const idx = habitacionesHotel[num].findIndex(r => r.ingreso === ingreso);
+        if(idx !== -1) {
+            const reserva = habitacionesHotel[num][idx];
+            historialReservasHotel.push({
+                habitacion: num,
+                nombre: reserva.nombre,
+                celular: reserva.celular,
+                fecha: reserva.ingreso,
+                nota: reserva.nota
+            });
+            guardarHistorialHotel();
+            habitacionesHotel[num].splice(idx, 1);
+        }
+        guardarReservasHotel();
+        editarReservasFuturasHotel(num);
+        renderTablaHotel();
+    }
+    function buscarReserva() {
+        const q = document.getElementById('busquedaHotel').value.trim().toLowerCase();
+        if(!q) {
+            renderTablaHotel();
+            return;
+        }
+        const tbody = document.getElementById('habitacionesBodyHotel');
+        tbody.innerHTML = '';
+        for(let i=1; i<=20; i++) {
+            const reservas = habitacionesHotel[i].filter(r =>
+                r.nombre.toLowerCase().includes(q) ||
+                r.celular.toLowerCase().includes(q)
+            );
+            reservas.forEach(r => {
+                const ini = r.ingreso;
+                const fin = r.salida;
+                const hoy = new Date().toISOString().slice(0,10);
+                const reservadaHoy = hoy >= ini && hoy <= fin;
+                const tr = document.createElement('tr');
+                tr.className = reservadaHoy ? 'reservada' : 'disponible';
+                tr.innerHTML = 
+                    `<td>${i}</td>
+                    <td>${reservadaHoy ? 'Reservada' : 'Disponible'}</td>
+                    <td>${r.nombre}</td>
+                    <td>${r.celular}</td>
+                    <td>${new Date(r.ingreso).toLocaleDateString('es-ES')}</td>
+                    <td>${new Date(r.salida).toLocaleDateString('es-ES')}</td>
+                    <td>${r.pago || 'Pendiente'}</td>
+                    <td>${r.checkin ? 'Sí' : 'No'}</td>
+                    <td>${r.nota || ''}</td>`;
+                tbody.appendChild(tr);
+            });
+        }
+    }
+    function exportarExcel() {
+        let datos = [["Habitación", "Cliente", "Celular", "Fecha", "Nota"]];
+        for(let i=1; i<=20; i++) {
+            habitacionesHotel[i].forEach(r => {
+                datos.push([
+                    i,
+                    r.nombre,
+                    r.celular,
+                    new Date(r.fecha).toLocaleDateString('es-ES'),
+                    r.nota || ''
+                ]);
+            });
+        }
+        const wb = XLSX.utils.book_new();
+        const ws = XLSX.utils.aoa_to_sheet(datos);
+        XLSX.utils.book_append_sheet(wb, ws, "Reservas");
+        XLSX.writeFile(wb, "informe_reservas.xlsx");
+    }
+    function verDisponiblesPorFecha() {
+        const fecha = document.getElementById('fechaConsultaHotel').value;
+        if (!fecha) {
+            alert('Selecciona una fecha para consultar.');
+            return;
+        }
+        let disponibles = [];
+        for (let i = 1; i <= 20; i++) {
+            const reservas = habitacionesHotel[i];
+            // Revisar si la fecha consultada está dentro de alguna reserva (rango)
+            const reservada = reservas.some(r => {
+                return fecha >= r.ingreso && fecha <= r.salida;
+            });
+            if (!reservada) disponibles.push(i);
+        }
+        if (disponibles.length === 0) {
+            alert('No hay habitaciones disponibles para esa fecha.');
+        } else {
+            alert('Habitaciones disponibles para ' + new Date(fecha).toLocaleDateString('es-ES') + ':\n\n' + disponibles.join(', '));
+        }
+    }
+
+    function renderTablaHotel() {
+        const tbody = document.getElementById('habitacionesBodyHotel');
+        tbody.innerHTML = '';
+        const hoy = new Date().toISOString().slice(0,10);
+        for(let i=1; i<=20; i++) {
+            const reservas = habitacionesHotel[i];
+            // Buscar reserva activa hoy (multi-día)
+            let activa = reservas.find(r => {
+                const ini = r.ingreso || r.fecha;
+                const fin = r.salida || r.fecha;
+                return hoy >= ini && hoy <= fin;
+            });
+            // Buscar próxima futura
+            let futura = reservas.filter(r => (r.ingreso||r.fecha) > hoy)
+                .sort((a,b) => (a.ingreso||a.fecha).localeCompare(b.ingreso||b.fecha))[0];
+            // Si no hay activa ni futura, mostrar la última pasada
+            let pasada = reservas.filter(r => (r.salida||r.fecha) < hoy)
+                .sort((a,b) => (b.salida||b.fecha).localeCompare(a.salida||a.fecha))[0];
+            let mostrar = activa || futura || pasada;
+            let estado = 'Disponible';
+            if (activa) estado = 'Reservada hoy';
+            else if (futura) estado = 'Reservada futura';
+            else if (pasada) estado = 'Reservada pasada';
+            const nombre = mostrar ? mostrar.nombre : '-';
+            const celular = mostrar ? mostrar.celular : '-';
+            const ingreso = mostrar ? (mostrar.ingreso ? new Date(mostrar.ingreso).toLocaleDateString('es-ES') : (mostrar.fecha ? new Date(mostrar.fecha).toLocaleDateString('es-ES') : '-')) : '-';
+            const salida = mostrar ? (mostrar.salida ? new Date(mostrar.salida).toLocaleDateString('es-ES') : (mostrar.fecha ? new Date(mostrar.fecha).toLocaleDateString('es-ES') : '-')) : '-';
+            const pago = activa ? (activa.pago || 'Pendiente') : '-';
+            const checkin = activa ? (activa.checkin ? 'Sí' : 'No') : '-';
+            const tr = document.createElement('tr');
+            tr.className = activa ? 'reservada' : 'disponible';
+            tbody.appendChild(tr);
+            tr.innerHTML = `
+                <td>${i}</td>
+                <td>${estado}</td>
+                <td>${nombre}</td>
+                <td>${celular}</td>
+                <td>${ingreso}</td>
+                <td>${salida}</td>
+                <td><button onclick="togglePago(${i})"${!activa?' disabled':''}>${pago}</button></td>
+                <td><button onclick="toggleCheckin(${i})"${!activa?' disabled':''}>${checkin}</button></td>
+                <td></td>
+            `;
+            const accionTd = tr.querySelector('td:last-child');
+            const btnAccion = document.createElement('button');
+            btnAccion.textContent = estado === 'Disponible' ? 'Reservar' : 'Liberar';
+            btnAccion.onclick = function() {
+                if(estado === 'Disponible') {
+                    abrirReservaHotel(i);
+                } else if (activa) {
+                    liberarHotel(i);
+                } else {
+                    alert('Solo puedes liberar la reserva activa de hoy. Para otras fechas, usa "Editar futuras".');
                 }
             };
             accionTd.appendChild(btnAccion);
@@ -377,17 +741,65 @@
         e.preventDefault();
         const nombre = document.getElementById('nombreHotel').value.trim();
         const celular = document.getElementById('celularHotel').value.trim();
-        const fecha = document.getElementById('fechaReservaHotel').value;
+        const ingreso = document.getElementById('ingresoHotel').value;
+        const salida = document.getElementById('salidaHotel').value;
         const nota = document.getElementById('notaHotel').value.trim();
-        if(!nombre || !celular || !fecha) return;
-        if(habitacionesHotel[reservaHabHotel].some(r => r.fecha === fecha)) {
-            alert('Ya existe una reserva para esa fecha en esta habitación.');
+        if(!nombre || !celular || !ingreso || !salida) {
+            alert('Todos los campos son obligatorios.');
             return;
         }
-        habitacionesHotel[reservaHabHotel].push({nombre, celular, fecha, nota});
+        // Normalizar fechas a formato YYYY-MM-DD
+        const ingresoNorm = new Date(ingreso).toISOString().slice(0,10);
+        const salidaNorm = new Date(salida).toISOString().slice(0,10);
+        if(salidaNorm < ingresoNorm) {
+            alert('La fecha de salida no puede ser anterior a la de ingreso.');
+            return;
+        }
+        // Verificar solapamiento de fechas (multi-día)
+        if(habitacionesHotel[reservaHabHotel].some(r => {
+            const ini = r.ingreso;
+            const fin = r.salida;
+            return (ingresoNorm <= fin && salidaNorm >= ini);
+        })) {
+            alert('Ya existe una reserva que se solapa con ese rango de fechas en esta habitación.');
+            return;
+        }
+        habitacionesHotel[reservaHabHotel].push({nombre, celular, ingreso: ingresoNorm, salida: salidaNorm, nota, pago:'Pendiente', checkin:false});
         guardarReservasHotel();
         cerrarModal();
         renderTablaHotel();
+    // ...no cerrar función aquí, ya está cerrada correctamente abajo...
+    // Botón para cambiar estado de pago
+    // Botón para cambiar estado de pago SOLO de la reserva activa hoy
+    function togglePago(num) {
+        const hoy = new Date().toISOString().slice(0,10);
+        let reservas = habitacionesHotel[num];
+        let activa = reservas.find(r => {
+            const ini = r.ingreso || r.fecha;
+            const fin = r.salida || r.fecha;
+            return hoy >= ini && hoy <= fin;
+        });
+        if(activa) {
+            activa.pago = activa.pago === 'Pendiente' ? 'Cancelado' : 'Pendiente';
+            guardarReservasHotel();
+            renderTablaHotel();
+        }
+    }
+    // Botón para cambiar estado de check-in SOLO de la reserva activa hoy
+    function toggleCheckin(num) {
+        const hoy = new Date().toISOString().slice(0,10);
+        let reservas = habitacionesHotel[num];
+        let activa = reservas.find(r => {
+            const ini = r.ingreso || r.fecha;
+            const fin = r.salida || r.fecha;
+            return hoy >= ini && hoy <= fin;
+        });
+        if(activa) {
+            activa.checkin = !activa.checkin;
+            guardarReservasHotel();
+            renderTablaHotel();
+        }
+    }
     }
     let historialReservasHotel = JSON.parse(localStorage.getItem('historialReservasHotel') || '[]');
     function guardarHistorialHotel() {
@@ -414,22 +826,28 @@
         document.getElementById('historialHotel').style.display = 'none';
     }
     function liberarHotel(num) {
-        if(!confirm('¿Seguro que quieres liberar la reserva de hoy?')) return;
+        if(!confirm('¿Seguro que quieres liberar la reserva activa de hoy?')) return;
         const hoy = new Date().toISOString().slice(0,10);
-        const reserva = habitacionesHotel[num].find(r => r.fecha === hoy);
-        if(reserva) {
+        // Buscar la reserva activa hoy (multi-día)
+        const idx = habitacionesHotel[num].findIndex(r => {
+            const ini = r.ingreso || r.fecha;
+            const fin = r.salida || r.fecha;
+            return hoy >= ini && hoy <= fin;
+        });
+        if(idx !== -1) {
+            const reserva = habitacionesHotel[num][idx];
             historialReservasHotel.push({
                 habitacion: num,
                 nombre: reserva.nombre,
                 celular: reserva.celular,
-                fecha: reserva.fecha,
+                fecha: hoy,
                 nota: reserva.nota
             });
             guardarHistorialHotel();
+            habitacionesHotel[num].splice(idx, 1);
+            guardarReservasHotel();
+            renderTablaHotel();
         }
-        habitacionesHotel[num] = habitacionesHotel[num].filter(r => r.fecha !== hoy);
-        guardarReservasHotel();
-        renderTablaHotel();
     }
     function limpiarAgenda() {
         if(confirm('¿Seguro que quieres limpiar todas las reservas?')) {
@@ -443,13 +861,14 @@
         const informeBody = document.getElementById('informeBodyHotel');
         informeBody.innerHTML = '';
         for(let i=1; i<=20; i++) {
-            habitacionesHotel[i].forEach(r => {
+            habitacionesHotel[i].forEach(function(r) {
                 const tr = document.createElement('tr');
                 tr.innerHTML = 
                     `<td>${i}</td>
                     <td>${r.nombre}</td>
                     <td>${r.celular}</td>
-                    <td>${new Date(r.fecha).toLocaleDateString('es-ES')}</td>
+                    <td>${r.ingreso ? new Date(r.ingreso).toLocaleDateString('es-ES') : '-'}</td>
+                    <td>${r.salida ? new Date(r.salida).toLocaleDateString('es-ES') : '-'}</td>
                     <td>${r.nota || ''}</td>`;
                 informeBody.appendChild(tr);
             });
@@ -474,7 +893,8 @@
     }
     function editarReservasFuturasHotel(num) {
         const hoy = new Date().toISOString().slice(0,10);
-        const futuras = habitacionesHotel[num].filter(r => r.fecha !== hoy);
+        // Mostrar todas las reservas futuras (cuyo ingreso es después de hoy)
+        const futuras = habitacionesHotel[num].filter(r => (r.ingreso||r.fecha) > hoy);
         const cont = document.getElementById('editReservasHotel');
         document.getElementById('editHabNumHotel').textContent = num;
         cont.innerHTML = '';
@@ -486,28 +906,29 @@
                 div.style.marginBottom = '10px';
                 div.innerHTML = 
                     `<b>${r.nombre}</b> (${r.celular})<br>
-                    Fecha: ${new Date(r.fecha).toLocaleDateString('es-ES')}<br>
+                    Ingreso: ${r.ingreso ? new Date(r.ingreso).toLocaleDateString('es-ES') : (r.fecha ? new Date(r.fecha).toLocaleDateString('es-ES') : '-')}, Salida: ${r.salida ? new Date(r.salida).toLocaleDateString('es-ES') : (r.fecha ? new Date(r.fecha).toLocaleDateString('es-ES') : '-') }<br>
                     Nota: ${r.nota || ''}<br>
-                    <button onclick="eliminarReservaFuturaHotel(${num}, '${r.fecha}')">Eliminar</button>`;
+                    <button onclick="eliminarReservaFuturaHotel(${num}, '${r.ingreso||r.fecha}')">Eliminar</button>`;
                 cont.appendChild(div);
             });
         }
         document.getElementById('modalEditBgHotel').style.display = 'flex';
     }
     function eliminarReservaFuturaHotel(num, fecha) {
-        if(!confirm('¿Seguro que quieres eliminar esta reserva?')) return;
-        const reserva = habitacionesHotel[num].find(r => r.fecha === fecha);
-        if(reserva) {
+        // Eliminar por ingreso (o fecha) para multi-día
+        const idx = habitacionesHotel[num].findIndex(r => (r.ingreso||r.fecha) === fecha);
+        if(idx !== -1) {
+            const reserva = habitacionesHotel[num][idx];
             historialReservasHotel.push({
                 habitacion: num,
                 nombre: reserva.nombre,
                 celular: reserva.celular,
-                fecha: reserva.fecha,
+                fecha: reserva.ingreso||reserva.fecha,
                 nota: reserva.nota
             });
             guardarHistorialHotel();
+            habitacionesHotel[num].splice(idx, 1);
         }
-        habitacionesHotel[num] = habitacionesHotel[num].filter(r => r.fecha !== fecha);
         guardarReservasHotel();
         editarReservasFuturasHotel(num);
         renderTablaHotel();
@@ -529,14 +950,22 @@
                 r.celular.toLowerCase().includes(q)
             );
             reservas.forEach(r => {
+                // Mostrar rango de fechas si existe
+                const ini = r.ingreso || r.fecha;
+                const fin = r.salida || r.fecha;
+                const hoy = new Date().toISOString().slice(0,10);
+                const reservadaHoy = hoy >= ini && hoy <= fin;
                 const tr = document.createElement('tr');
-                tr.className = r.fecha === new Date().toISOString().slice(0,10) ? 'reservada' : 'disponible';
+                tr.className = reservadaHoy ? 'reservada' : 'disponible';
                 tr.innerHTML = 
                     `<td>${i}</td>
-                    <td>${r.fecha === new Date().toISOString().slice(0,10) ? 'Reservada' : 'Disponible'}</td>
+                    <td>${reservadaHoy ? 'Reservada' : 'Disponible'}</td>
                     <td>${r.nombre}</td>
                     <td>${r.celular}</td>
-                    <td>${new Date(r.fecha).toLocaleDateString('es-ES')}</td>
+                    <td>${r.ingreso ? new Date(r.ingreso).toLocaleDateString('es-ES') : (r.fecha ? new Date(r.fecha).toLocaleDateString('es-ES') : '-')}</td>
+                    <td>${r.salida ? new Date(r.salida).toLocaleDateString('es-ES') : (r.fecha ? new Date(r.fecha).toLocaleDateString('es-ES') : '-')}</td>
+                    <td>${r.pago || 'Pendiente'}</td>
+                    <td>${r.checkin ? 'Sí' : 'No'}</td>
                     <td>${r.nota || ''}</td>`;
                 tbody.appendChild(tr);
             });
@@ -569,7 +998,12 @@
         let disponibles = [];
         for (let i = 1; i <= 20; i++) {
             const reservas = habitacionesHotel[i];
-            const reservada = reservas.some(r => r.fecha === fecha);
+            // Revisar si la fecha consultada está dentro de alguna reserva (rango)
+            const reservada = reservas.some(r => {
+                const ini = r.ingreso || r.fecha;
+                const fin = r.salida || r.fecha;
+                return fecha >= ini && fecha <= fin;
+            });
             if (!reservada) disponibles.push(i);
         }
         if (disponibles.length === 0) {
@@ -578,6 +1012,7 @@
             alert('Habitaciones disponibles para ' + new Date(fecha).toLocaleDateString('es-ES') + ':\n\n' + disponibles.join(', '));
         }
     }
+
     function eliminarHistorial() {
         if(confirm('¿Seguro que quieres eliminar todo el historial de reservas eliminadas?')) {
             historialReservasHotel = [];
