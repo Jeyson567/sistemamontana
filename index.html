@@ -1,499 +1,443 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <title>Sistema Unificado - Hotel, Cocina y Bar</title>
-    <style>
-        body {
-            font-family: 'Segoe UI', Arial, sans-serif;
-            background: linear-gradient(120deg, #e0eafc, #cfdef3);
-            margin: 0;
-            padding: 0;
-            min-height: 100vh;
-        }
-        h1 {
-            color: #2c3e50;
-            margin-top: 32px;
-            text-align: center;
-            text-shadow: 0 2px 8px #ccc;
-        }
-        .area-menu {
-            display: flex;
-            gap: 32px;
-            justify-content: center;
-            margin: 32px 0;
-        }
-        .area-btn {
-            background: #3498db;
-            color: #fff;
-            border: none;
-            border-radius: 12px;
-            padding: 32px 48px;
-            font-size: 1.5rem;
-            cursor: pointer;
-            box-shadow: 0 2px 8px #bbb;
-            transition: background 0.2s, transform 0.2s;
-        }
-        .area-btn:hover {
-            background: #217dbb;
-            transform: scale(1.05);
-        }
-        .modulo {
-            display: none;
-            max-width: 900px;
-            margin: 0 auto 40px auto;
-            background: #fff;
-            border-radius: 16px;
-            box-shadow: 0 2px 16px #3333;
-            padding: 32px;
-        }
-        .volver-btn {
-            background: #e67e22;
-            color: #fff;
-            border: none;
-            border-radius: 8px;
-            padding: 10px 24px;
-            font-size: 1rem;
-            cursor: pointer;
-            margin-bottom: 24px;
-        }
-        .volver-btn:hover {
-            background: #b95c00;
-        }
-        /* Reutiliza estilos de hotel.html para tablas y botones */
-        table {
-            border-collapse: collapse;
-            width: 100%;
-            background: #fff;
-            box-shadow: 0 2px 8px #ccc;
-        }
-        th, td {
-            border: 1px solid #e1e1e1;
-            padding: 10px;
-            text-align: center;
-        }
-        th {
-            background: #34495e;
-            color: #fff;
-        }
-        .reservada {
-            background: #ffe0e0;
-        }
-        .disponible {
-            background: #e0ffe0;
-        }
-    </style>
-    <script src="https://cdn.sheetjs.com/xlsx-latest/package/dist/xlsx.full.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Sistemas de Inventario Completos</title>
+	<style>
+		body { font-family: Arial, sans-serif; margin: 0; padding: 0; background: #f4f4f4; }
+		.container { max-width: 900px; margin: 30px auto; background: #fff; padding: 30px; border-radius: 10px; box-shadow: 0 2px 8px #0002; }
+		h2 { color: #2c3e50; }
+		.section { margin-bottom: 40px; }
+		input, select, button { margin: 5px 0; padding: 7px; border-radius: 4px; border: 1px solid #ccc; }
+		table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+		th, td { border: 1px solid #ddd; padding: 8px; text-align: center; }
+		th { background: #2980b9; color: #fff; }
+		.admin-section { background: #eaf6ff; padding: 15px; border-radius: 8px; }
+		.hidden { display: none; }
+		.success { color: green; }
+		.error { color: red; }
+	</style>
 </head>
 <body>
-    <h1>Sistema Unificado</h1>
-    <div class="area-menu" id="areaMenu">
-    <!-- <button class="area-btn" onclick="mostrarModulo('hotel')">Hotel / Recepción</button> -->
-        <button class="area-btn" onclick="mostrarModulo('cocina')">Cocina</button>
-        <button class="area-btn" onclick="mostrarModulo('bar')">Bar</button>
-    </div>
+<div class="container">
+	<h1>Sistemas de Inventario Completos</h1>
+	<div id="menu-principal">
+		<h2>Selecciona el inventario</h2>
+		<button onclick="mostrarInventario('A')">Inventario Bar</button>
+		<button onclick="mostrarInventario('B')">Inventario Cocina</button>
+	</div>
+	<div class="section" id="inventarioA" style="display:none">
+		<button onclick="volverMenu()">&larr; Volver al menú</button>
+		<h2>Inventario Bar</h2>
+		<div>
+			<h3>Registrar Producto</h3>
+			<input type="text" id="a-nombre" placeholder="Nombre del producto">
+			<input type="number" id="a-cantidad" placeholder="Cantidad inicial">
+			<button onclick="agregarProducto('A')">Agregar</button>
+			<span id="a-add-msg"></span>
+		</div>
+		<div>
+			<h3>Inventario Actual</h3>
+			<button onclick="exportarInventarioCSV('A')">Exportar Inventario a CSV</button>
+			<table id="a-tabla-inventario">
+				<thead>
+					<tr><th>Producto</th><th>Categoría</th><th>Cantidad</th><th>Acciones</th></tr>
+				</thead>
+				<tbody></tbody>
+			</table>
+		</div>
+		<div>
+			<h3>Resumen de Ventas del Día</h3>
+			<button onclick="exportarVentasDiaCSV('A')">Exportar Ventas Día a CSV</button>
+			<table id="a-tabla-ventas-dia">
+				<thead>
+					<tr><th>Producto</th><th>Cantidad Vendida</th><th>Acciones</th></tr>
+				</thead>
+				<tbody></tbody>
+			</table>
+			<div id="a-total-dia"></div>
+		</div>
+		<div>
+			<h3>Historial de Movimientos</h3>
+			<button onclick="exportarHistorialCSV('A')">Exportar Historial a CSV</button>
+			<table id="a-tabla-historial">
+				<thead>
+					<tr><th>Fecha</th><th>Tipo</th><th>Producto</th><th>Categoría</th><th>Cantidad</th><th>Usuario</th></tr>
+				</thead>
+				<tbody></tbody>
+			</table>
+		</div>
+		<div class="admin-section">
+			<h3>Corte Semanal (Admin)</h3>
+			<input type="password" id="a-admin-pass" placeholder="Contraseña admin">
+			<button onclick="mostrarCorte('A')">Ver Corte</button>
+			<div id="a-corte-semanal" class="hidden"></div>
+		</div>
+		<div>
+			<h3>Conteo y Corroboración de Inventario</h3>
+			<button onclick="corroborarInventario('A')">Corroborar Inventario</button>
+			<div id="a-corroboracion"></div>
+		</div>
+	</div>
+	<hr>
+	<!-- Aquí irá el Inventario B -->
+	<div class="section" id="inventarioB" style="display:none">
+		<button onclick="volverMenu()">&larr; Volver al menú</button>
+		<h2>Inventario Cocina</h2>
+		<div>
+			<h3>Registrar Producto</h3>
+			<input type="text" id="b-nombre" placeholder="Nombre del producto">
+			<input type="number" id="b-cantidad" placeholder="Cantidad inicial">
+			<button onclick="agregarProducto('B')">Agregar</button>
+			<span id="b-add-msg"></span>
+		</div>
+		<div>
+			<h3>Inventario Actual</h3>
+			<button onclick="exportarInventarioCSV('B')">Exportar Inventario a CSV</button>
+			<table id="b-tabla-inventario">
+				<thead>
+					<tr><th>Producto</th><th>Categoría</th><th>Cantidad</th><th>Acciones</th></tr>
+				</thead>
+				<tbody></tbody>
+			</table>
+		</div>
+		<div>
+			<h3>Resumen de Ventas del Día</h3>
+			<button onclick="exportarVentasDiaCSV('B')">Exportar Ventas Día a CSV</button>
+			<table id="b-tabla-ventas-dia">
+				<thead>
+					<tr><th>Producto</th><th>Cantidad Vendida</th><th>Acciones</th></tr>
+				</thead>
+				<tbody></tbody>
+			</table>
+			<div id="b-total-dia"></div>
+		</div>
+		<div>
+			<h3>Historial de Movimientos</h3>
+			<button onclick="exportarHistorialCSV('B')">Exportar Historial a CSV</button>
+			<table id="b-tabla-historial">
+				<thead>
+					<tr><th>Fecha</th><th>Tipo</th><th>Producto</th><th>Categoría</th><th>Cantidad</th><th>Usuario</th></tr>
+				</thead>
+				<tbody></tbody>
+			</table>
+		</div>
+		<div class="admin-section">
+			<h3>Corte Semanal (Admin)</h3>
+			<input type="password" id="b-admin-pass" placeholder="Contraseña admin">
+			<button onclick="mostrarCorte('B')">Ver Corte</button>
+			<div id="b-corte-semanal" class="hidden"></div>
+		</div>
+		<div>
+			<h3>Conteo y Corroboración de Inventario</h3>
+			<button onclick="corroborarInventario('B')">Corroborar Inventario</button>
+			<div id="b-corroboracion"></div>
+		</div>
+	</div>
+</div>
+<script>
+// Configuración de contraseñas admin (puedes cambiar estas)
+const adminPasswords = { A: 'adminA123', B: 'adminB123' };
 
-    <!-- Hotel / Recepción eliminado -->
+// Utilidades de LocalStorage y CSV
+function getData(key) {
+	return JSON.parse(localStorage.getItem(key) || '[]');
+}
+function setData(key, data) {
+	localStorage.setItem(key, JSON.stringify(data));
+}
+function getToday() {
+	const d = new Date();
+	// Obtener fecha local en formato YYYY-MM-DD
+	const year = d.getFullYear();
+	const month = String(d.getMonth() + 1).padStart(2, '0');
+	const day = String(d.getDate()).padStart(2, '0');
+	return `${year}-${month}-${day}`;
+}
+function getNow() {
+	const d = new Date();
+	// Obtener fecha y hora local en formato YYYY-MM-DD HH:MM:SS
+	const year = d.getFullYear();
+	const month = String(d.getMonth() + 1).padStart(2, '0');
+	const day = String(d.getDate()).padStart(2, '0');
+	const hours = String(d.getHours()).padStart(2, '0');
+	const minutes = String(d.getMinutes()).padStart(2, '0');
+	const seconds = String(d.getSeconds()).padStart(2, '0');
+	return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+}
+function getWeek() {
+	const d = new Date();
+	const year = d.getFullYear();
+	const onejan = new Date(d.getFullYear(),0,1);
+	const week = Math.ceil((((d - onejan) / 86400000) + onejan.getDay()+1)/7);
+	return `${year}-W${week}`;
+}
+function toCSV(rows) {
+	return rows.map(r => r.map(x => {
+		let s = String(x).replace(/"/g, '""');
+		if (s.search(/[",\n]/) >= 0) s = '"' + s + '"';
+		return s;
+	}).join(',')).join('\r\n');
+}
+function downloadCSV(filename, rows) {
+	const csv = toCSV(rows);
+	const blob = new Blob([csv], {type: 'text/csv'});
+	const url = URL.createObjectURL(blob);
+	const a = document.createElement('a');
+	a.href = url; a.download = filename; a.click();
+	setTimeout(()=>URL.revokeObjectURL(url), 1000);
+}
 
-    <!-- Cocina -->
-    <div class="modulo" id="moduloCocina">
-        <button class="volver-btn" onclick="volverMenu()">Volver al menú</button>
-        <h2>Inventario de Cocina</h2>
-        <div class="container" style="box-shadow:none;padding:0;max-width:100%;">
-            <div id="lowStockAlertCocina"></div>
-            <form id="addFormCocina">
-                <h3>Ingreso de Producto</h3>
-                <label>Nombre del producto</label>
-                <input type="text" id="addNameCocina" required>
-                <label>Cantidad</label>
-                <input type="number" id="addQtyCocina" min="1" required>
-                <button type="submit">Ingresar</button>
-            </form>
-            <form id="sellFormCocina">
-                <h3>Venta de Producto</h3>
-                <label>Producto</label>
-                <select id="sellNameCocina"></select>
-                <label>Cantidad a vender</label>
-                <input type="number" id="sellQtyCocina" min="1" required>
-                <button type="submit">Vender</button>
-            </form>
-            <h3>Informe de Inventario</h3>
-            <table id="inventoryTableCocina">
-                <thead>
-                    <tr><th>Producto</th><th>Cantidad</th></tr>
-                </thead>
-                <tbody></tbody>
-            </table>
-            <button id="clearAllCocina" style="background:#e74c3c;margin-top:18px;">Borrar todo</button>
-            <button id="pdfVentasCocina" style="background:#27ae60;margin-top:18px;">Descargar informe de ventas de hoy (PDF)</button>
-        </div>
-    </div>
+// Inventario y ventas por sistema
+function getKeys(sistema) {
+	return {
+		inventario: `inv_${sistema}`,
+		ventas: `ventas_${sistema}`,
+		corte: `corte_${sistema}`,
+		historial: `historial_${sistema}`
+	};
+}
 
-    <!-- Bar -->
-    <div class="modulo" id="moduloBar">
-        <button class="volver-btn" onclick="volverMenu()">Volver al menú</button>
-        <h2>Inventario de Bar</h2>
-        <div class="container" style="box-shadow:none;padding:0;max-width:100%;">
-            <div id="lowStockAlertBar"></div>
-            <form id="addFormBar">
-                <h3>Ingreso de Producto</h3>
-                <label>Nombre del producto</label>
-                <input type="text" id="addNameBar" required>
-                <label>Cantidad</label>
-                <input type="number" id="addQtyBar" min="1" required>
-                <button type="submit">Ingresar</button>
-            </form>
-            <form id="sellFormBar">
-                <h3>Venta de Producto</h3>
-                <label>Producto</label>
-                <select id="sellNameBar"></select>
-                <label>Cantidad a vender</label>
-                <input type="number" id="sellQtyBar" min="1" required>
-                <button type="submit">Vender</button>
-            </form>
-            <h3>Informe de Inventario</h3>
-            <table id="inventoryTableBar">
-                <thead>
-                    <tr><th>Producto</th><th>Cantidad</th></tr>
-                </thead>
-                <tbody></tbody>
-            </table>
-            <button id="clearAllBar" style="background:#e74c3c;margin-top:18px;">Borrar todo</button>
-            <button id="pdfVentasBar" style="background:#27ae60;margin-top:18px;">Descargar informe de ventas de hoy (PDF)</button>
-        </div>
-    </div>
+function agregarProducto(sistema) {
+	const nombre = document.getElementById(`${sistema.toLowerCase()}-nombre`).value.trim();
+	const cantidad = parseInt(document.getElementById(`${sistema.toLowerCase()}-cantidad`).value);
+	let categoria = prompt('Categoría del producto (ej: Bebidas, Alimentos, etc):', '');
+	if (!categoria) categoria = 'Sin categoría';
+	const msg = document.getElementById(`${sistema.toLowerCase()}-add-msg`);
+	if (!nombre || isNaN(cantidad) || cantidad <= 0) {
+		msg.textContent = 'Datos inválidos'; msg.className = 'error'; return;
+	}
+	let inventario = getData(getKeys(sistema).inventario);
+	let idx = inventario.findIndex(p => p.nombre.toLowerCase() === nombre.toLowerCase());
+	if (idx >= 0) {
+		if (!confirm('El producto ya existe. ¿Deseas actualizarlo y sumar la cantidad?')) return;
+		inventario[idx].cantidad += cantidad;
+		inventario[idx].categoria = categoria;
+		registrarHistorial(sistema, 'Actualización', nombre, categoria, cantidad);
+	} else {
+		inventario.push({ nombre, cantidad, categoria });
+		registrarHistorial(sistema, 'Alta', nombre, categoria, cantidad);
+	}
+	setData(getKeys(sistema).inventario, inventario);
+	msg.textContent = 'Producto agregado/actualizado'; msg.className = 'success';
+	document.getElementById(`${sistema.toLowerCase()}-nombre`).value = '';
+	document.getElementById(`${sistema.toLowerCase()}-cantidad`).value = '';
+	renderInventario(sistema);
+	renderHistorial(sistema);
+}
 
-    <script>
-    // Menú principal y navegación
-    function mostrarModulo(area) {
-        document.getElementById('areaMenu').style.display = 'none';
-        document.getElementById('moduloCocina').style.display = 'none';
-        document.getElementById('moduloBar').style.display = 'none';
-        if(area === 'cocina') document.getElementById('moduloCocina').style.display = 'block';
-        if(area === 'bar') document.getElementById('moduloBar').style.display = 'block';
-    }
-    function volverMenu() {
-        document.getElementById('areaMenu').style.display = 'flex';
-        document.getElementById('moduloCocina').style.display = 'none';
-        document.getElementById('moduloBar').style.display = 'none';
-    }
+function venderProducto(sistema, nombre) {
+	const cantidad = parseInt(prompt('Cantidad a vender de ' + nombre + ':'));
+	if (isNaN(cantidad) || cantidad <= 0) return;
+	let inventario = getData(getKeys(sistema).inventario);
+	let idx = inventario.findIndex(p => p.nombre === nombre);
+	if (idx < 0 || inventario[idx].cantidad < cantidad) {
+		alert('No hay suficiente inventario'); return;
+	}
+	inventario[idx].cantidad -= cantidad;
+	setData(getKeys(sistema).inventario, inventario);
+	// Registrar venta
+	let ventas = getData(getKeys(sistema).ventas);
+	const today = getToday();
+	ventas.push({ nombre, cantidad, fecha: today, categoria: inventario[idx].categoria });
+	setData(getKeys(sistema).ventas, ventas);
+	registrarHistorial(sistema, 'Venta', nombre, inventario[idx].categoria, cantidad);
+	renderInventario(sistema);
+	renderVentasDia(sistema);
+	renderHistorial(sistema);
+}
 
-    // --- Lógica módulo Hotel eliminada ---
+function renderInventario(sistema) {
+	const inventario = getData(getKeys(sistema).inventario);
+	const tbody = document.querySelector(`#${sistema.toLowerCase()}-tabla-inventario tbody`);
+	tbody.innerHTML = '';
+	inventario.forEach((p, i) => {
+		tbody.innerHTML += `<tr><td>${p.nombre}</td><td>${p.categoria||''}</td><td>${p.cantidad}</td><td><button onclick=\"venderProducto('${sistema}','${p.nombre}')\">Vender</button> <button onclick=\"editarProducto('${sistema}',${i})\">Editar</button> <button onclick=\"eliminarProducto('${sistema}',${i})\">Eliminar</button></td></tr>`;
+	});
+}
 
-    // --- Lógica módulo Cocina ---
-    let inventarioCocina = [];
-    let ventasCocina = [];
-    const lowStockLimitCocina = 5;
-    function cargarDatosCocina() {
-        try {
-            inventarioCocina = JSON.parse(localStorage.getItem('inventario_cocina')) || [];
-        } catch(e) { inventarioCocina = []; }
-        try {
-            ventasCocina = JSON.parse(localStorage.getItem('ventas_cocina')) || [];
-        } catch(e) { ventasCocina = []; }
-    }
-    function guardarInventarioCocina() {
-        localStorage.setItem('inventario_cocina', JSON.stringify(inventarioCocina));
-    }
-    function guardarVentasCocina() {
-        localStorage.setItem('ventas_cocina', JSON.stringify(ventasCocina));
-    }
-    function actualizarTablaCocina() {
-        const tbody = document.querySelector('#inventoryTableCocina tbody');
-        tbody.innerHTML = '';
-        inventarioCocina.forEach(item => {
-            const tr = document.createElement('tr');
-            if (item.cantidad <= lowStockLimitCocina) tr.classList.add('low-stock');
-            tr.innerHTML = `<td>${item.nombre}</td><td>${item.cantidad}</td>`;
-            tbody.appendChild(tr);
-        });
-        guardarInventarioCocina();
-    }
-    function actualizarSelectCocina() {
-        const select = document.getElementById('sellNameCocina');
-        select.innerHTML = '';
-        inventarioCocina.forEach(item => {
-            const option = document.createElement('option');
-            option.value = item.nombre;
-            option.textContent = item.nombre;
-            select.appendChild(option);
-        });
-    }
-    function mostrarAlertaStockBajoCocina() {
-        const alertDiv = document.getElementById('lowStockAlertCocina');
-        const bajos = inventarioCocina.filter(item => item.cantidad <= lowStockLimitCocina);
-        if (bajos.length > 0) {
-            alertDiv.innerHTML = `<div class='alert'>¡Stock bajo en: ${bajos.map(i => i.nombre).join(', ')}!</div>`;
-        } else {
-            alertDiv.innerHTML = '';
-        }
-    }
-    document.getElementById('addFormCocina').onsubmit = function(e) {
-        e.preventDefault();
-        const nombre = document.getElementById('addNameCocina').value.trim();
-        const cantidad = parseInt(document.getElementById('addQtyCocina').value);
-        if (!nombre || cantidad < 1) return;
-        let prod = inventarioCocina.find(i => i.nombre === nombre);
-        if (prod) {
-            prod.cantidad += cantidad;
-        } else {
-            inventarioCocina.push({ nombre, cantidad });
-        }
-        actualizarTablaCocina();
-        actualizarSelectCocina();
-        mostrarAlertaStockBajoCocina();
-        this.reset();
-    };
-    document.getElementById('sellFormCocina').onsubmit = function(e) {
-        e.preventDefault();
-        const nombre = document.getElementById('sellNameCocina').value;
-        const cantidad = parseInt(document.getElementById('sellQtyCocina').value);
-        let prod = inventarioCocina.find(i => i.nombre === nombre);
-        if (!prod || cantidad < 1 || cantidad > prod.cantidad) {
-            alert('Cantidad inválida o producto sin stock suficiente.');
-            return;
-        }
-        prod.cantidad -= cantidad;
-        ventasCocina.push({
-            nombre,
-            cantidad,
-            fecha: new Date().toISOString()
-        });
-        guardarInventarioCocina();
-        guardarVentasCocina();
-        actualizarTablaCocina();
-        mostrarAlertaStockBajoCocina();
-        this.reset();
-    };
-    document.getElementById('clearAllCocina').onclick = function() {
-        if (confirm('¿Seguro que quieres borrar todo el inventario?')) {
-            inventarioCocina = [];
-            ventasCocina = [];
-            guardarInventarioCocina();
-            guardarVentasCocina();
-            actualizarTablaCocina();
-            actualizarSelectCocina();
-            mostrarAlertaStockBajoCocina();
-        }
-    };
-    document.getElementById('pdfVentasCocina').onclick = function() {
-        generarPDFVentasHoyCocina();
-    };
-    function generarPDFVentasHoyCocina() {
-        const hoy = new Date().toISOString().slice(0,10);
-        const ventasHoy = ventasCocina.filter(v => v.fecha.slice(0,10) === hoy);
-        if (ventasHoy.length === 0) {
-            alert('No hay ventas registradas hoy.');
-            return;
-        }
-        const { jsPDF } = window.jspdf;
-        const doc = new jsPDF();
-        doc.setFontSize(16);
-        doc.text('Informe de ventas - ' + hoy, 10, 15);
-        doc.setFontSize(12);
-        let y = 30;
-        doc.text('Producto', 10, y);
-        doc.text('Cantidad', 80, y);
-        doc.text('Hora', 130, y);
-        y += 8;
-        ventasHoy.forEach(v => {
-            doc.text(v.nombre, 10, y);
-            doc.text(String(v.cantidad), 80, y);
-            doc.text(new Date(v.fecha).toLocaleTimeString(), 130, y);
-            y += 8;
-        });
-        doc.save('ventas_cocina_' + hoy + '.pdf');
-    }
-    function programarPDFAutomaticoCocina() {
-        function checkHora() {
-            const ahora = new Date();
-            if (ahora.getHours() === 21 && ahora.getMinutes() === 0) {
-                generarPDFVentasHoyCocina();
-            }
-        }
-        setInterval(checkHora, 60000);
-    }
-    cargarDatosCocina();
-    actualizarTablaCocina();
-    actualizarSelectCocina();
-    mostrarAlertaStockBajoCocina();
-    programarPDFAutomaticoCocina();
+function renderVentasDia(sistema) {
+	const ventas = getData(getKeys(sistema).ventas).filter(v => v.fecha === getToday());
+	const resumen = {};
+	ventas.forEach((v, idx) => {
+		if (!resumen[v.nombre]) resumen[v.nombre] = { cantidad: 0, idxs: [] };
+		resumen[v.nombre].cantidad += v.cantidad;
+		resumen[v.nombre].idxs.push(idx);
+	});
+	const tbody = document.querySelector(`#${sistema.toLowerCase()}-tabla-ventas-dia tbody`);
+	tbody.innerHTML = '';
+	let totalDia = 0;
+	Object.keys(resumen).forEach(nombre => {
+		tbody.innerHTML += `<tr><td>${nombre}</td><td>${resumen[nombre].cantidad}</td><td><button onclick=\"editarVenta('${sistema}','${nombre}')\">Editar</button> <button onclick=\"eliminarVenta('${sistema}','${nombre}')\">Eliminar</button></td></tr>`;
+		totalDia += resumen[nombre].cantidad;
+	});
+	document.getElementById(`${sistema.toLowerCase()}-total-dia`).textContent = 'Total del día: ' + totalDia;
+}
+// Historial de movimientos
+function registrarHistorial(sistema, tipo, nombre, categoria, cantidad, usuario) {
+	let historial = getData(getKeys(sistema).historial);
+	historial.push({ fecha: getNow(), tipo, nombre, categoria, cantidad, usuario: usuario||'admin' });
+	setData(getKeys(sistema).historial, historial);
+}
 
-    // --- Lógica módulo Bar ---
-    let inventarioBar = [];
-    let ventasBar = [];
-    const lowStockLimitBar = 5;
-    function cargarDatosBar() {
-        try {
-            inventarioBar = JSON.parse(localStorage.getItem('inventario_bar')) || [];
-        } catch(e) { inventarioBar = []; }
-        try {
-            ventasBar = JSON.parse(localStorage.getItem('ventas_bar')) || [];
-        } catch(e) { ventasBar = []; }
-    }
-    function guardarInventarioBar() {
-        localStorage.setItem('inventario_bar', JSON.stringify(inventarioBar));
-    }
-    function guardarVentasBar() {
-        localStorage.setItem('ventas_bar', JSON.stringify(ventasBar));
-    }
-    function actualizarTablaBar() {
-        const tbody = document.querySelector('#inventoryTableBar tbody');
-        tbody.innerHTML = '';
-        inventarioBar.forEach(item => {
-            const tr = document.createElement('tr');
-            if (item.cantidad <= lowStockLimitBar) tr.classList.add('low-stock');
-            // Mostrar nombre con primera letra mayúscula
-            tr.innerHTML = `<td>${item.nombre.charAt(0).toUpperCase() + item.nombre.slice(1)}</td><td>${item.cantidad}</td>`;
-            tbody.appendChild(tr);
-        });
-        guardarInventarioBar();
-    }
-    function actualizarSelectBar() {
-        const select = document.getElementById('sellNameBar');
-        select.innerHTML = '';
-        if (inventarioBar.length === 0) {
-            const option = document.createElement('option');
-            option.value = '';
-            option.textContent = 'Sin productos';
-            select.appendChild(option);
-            return;
-        }
-        inventarioBar.forEach(item => {
-            const option = document.createElement('option');
-            option.value = item.nombre;
-            option.textContent = item.nombre.charAt(0).toUpperCase() + item.nombre.slice(1);
-            select.appendChild(option);
-        });
-    }
-    function mostrarAlertaStockBajoBar() {
-        const alertDiv = document.getElementById('lowStockAlertBar');
-        const bajos = inventarioBar.filter(item => item.cantidad <= lowStockLimitBar);
-        if (bajos.length > 0) {
-            alertDiv.innerHTML = `<div class='alert'>¡Stock bajo en: ${bajos.map(i => i.nombre).join(', ')}!</div>`;
-        } else {
-            alertDiv.innerHTML = '';
-        }
-    }
-    document.getElementById('addFormBar').onsubmit = function(e) {
-        e.preventDefault();
-        let nombre = document.getElementById('addNameBar').value.trim();
-        const cantidad = parseInt(document.getElementById('addQtyBar').value);
-        if (!nombre || isNaN(cantidad) || cantidad < 1) return;
-        nombre = nombre.toLowerCase(); // Normaliza nombre
-        let prod = inventarioBar.find(i => i.nombre === nombre);
-        if (prod) {
-            prod.cantidad += cantidad;
-        } else {
-            inventarioBar.push({ nombre, cantidad });
-        }
-        actualizarTablaBar();
-        actualizarSelectBar();
-        mostrarAlertaStockBajoBar();
-        this.reset();
-    };
+function renderHistorial(sistema) {
+	const historial = getData(getKeys(sistema).historial);
+	const tbody = document.querySelector(`#${sistema.toLowerCase()}-tabla-historial tbody`);
+	tbody.innerHTML = '';
+	historial.slice(-100).reverse().forEach(h => {
+		tbody.innerHTML += `<tr><td>${h.fecha}</td><td>${h.tipo}</td><td>${h.nombre}</td><td>${h.categoria||''}</td><td>${h.cantidad}</td><td>${h.usuario||''}</td></tr>`;
+	});
+}
 
-    document.getElementById('sellFormBar').onsubmit = function(e) {
-        e.preventDefault();
-        let nombre = document.getElementById('sellNameBar').value;
-        const cantidad = parseInt(document.getElementById('sellQtyBar').value);
-        if (!nombre || isNaN(cantidad) || cantidad < 1) {
-            alert('Datos de venta inválidos.');
-            return;
-        }
-        nombre = nombre.toLowerCase(); // Normaliza nombre
-        let prod = inventarioBar.find(i => i.nombre === nombre);
-        if (!prod || cantidad > prod.cantidad) {
-            alert('Cantidad inválida o producto sin stock suficiente.');
-            return;
-        }
-        prod.cantidad -= cantidad;
-        ventasBar.push({
-            nombre,
-            cantidad,
-            fecha: new Date().toISOString()
-        });
-        try {
-            guardarInventarioBar();
-            guardarVentasBar();
-        } catch (err) {
-            alert('Error guardando la venta. Intenta de nuevo.');
-        }
-        actualizarTablaBar();
-        mostrarAlertaStockBajoBar();
-        this.reset();
-    };
+// Exportar a CSV
+function exportarInventarioCSV(sistema) {
+	var inventario = getData(getKeys(sistema).inventario);
+	var rows = [['Producto','Categoría','Cantidad']].concat(inventario.map(p=>[p.nombre,p.categoria||'',p.cantidad]));
+	downloadCSV(`inventario_${sistema}.csv`, rows);
+}
+function exportarVentasDiaCSV(sistema) {
+	var ventas = getData(getKeys(sistema).ventas).filter(v=>v.fecha===getToday());
+	var rows = [['Producto','Categoría','Cantidad','Fecha']].concat(ventas.map(v=>[v.nombre,v.categoria||'',v.cantidad,v.fecha]));
+	downloadCSV(`ventas_dia_${sistema}.csv`, rows);
+}
+function exportarHistorialCSV(sistema) {
+	var historial = getData(getKeys(sistema).historial);
+	var rows = [['Fecha','Tipo','Producto','Categoría','Cantidad','Usuario']].concat(historial.map(h=>[h.fecha,h.tipo,h.nombre,h.categoria||'',h.cantidad,h.usuario||'']));
+	downloadCSV(`historial_${sistema}.csv`, rows);
+}
 
-    document.getElementById('clearAllBar').onclick = function() {
-        if (confirm('¿Seguro que quieres borrar todo el inventario?')) {
-            inventarioBar = [];
-            ventasBar = [];
-            guardarInventarioBar();
-            guardarVentasBar();
-            actualizarTablaBar();
-            actualizarSelectBar();
-            mostrarAlertaStockBajoBar();
-        }
-    };
+// Editar y eliminar productos solo con contraseña admin
+function editarProducto(sistema, idx) {
+	const pass = prompt('Contraseña admin para editar:');
+	if (pass !== adminPasswords[sistema]) {
+		alert('Contraseña incorrecta'); return;
+	}
+	let inventario = getData(getKeys(sistema).inventario);
+	let p = inventario[idx];
+	let nombre = prompt('Nuevo nombre:', p.nombre) || p.nombre;
+	let categoria = prompt('Nueva categoría:', p.categoria) || p.categoria;
+	let cantidad = parseInt(prompt('Nueva cantidad:', p.cantidad));
+	if (!nombre || isNaN(cantidad) || cantidad < 0) return alert('Datos inválidos');
+	registrarHistorial(sistema, 'Edición', nombre, categoria, cantidad);
+	inventario[idx] = { nombre, categoria, cantidad };
+	setData(getKeys(sistema).inventario, inventario);
+	renderInventario(sistema);
+	renderHistorial(sistema);
+}
+function eliminarProducto(sistema, idx) {
+	const pass = prompt('Contraseña admin para eliminar:');
+	if (pass !== adminPasswords[sistema]) {
+		alert('Contraseña incorrecta'); return;
+	}
+	if (!confirm('¿Seguro que deseas eliminar este producto?')) return;
+	let inventario = getData(getKeys(sistema).inventario);
+	registrarHistorial(sistema, 'Eliminación', inventario[idx].nombre, inventario[idx].categoria, inventario[idx].cantidad);
+	inventario.splice(idx,1);
+	setData(getKeys(sistema).inventario, inventario);
+	renderInventario(sistema);
+	renderHistorial(sistema);
+}
+function editarVenta(sistema, nombre) {
+	let ventas = getData(getKeys(sistema).ventas);
+	let idx = ventas.findIndex(v => v.nombre === nombre && v.fecha === getToday());
+	if (idx < 0) return;
+	let cantidad = parseInt(prompt('Nueva cantidad vendida:', ventas[idx].cantidad));
+	if (isNaN(cantidad) || cantidad < 0) return alert('Datos inválidos');
+	registrarHistorial(sistema, 'Edición Venta', nombre, ventas[idx].categoria, cantidad);
+	ventas[idx].cantidad = cantidad;
+	setData(getKeys(sistema).ventas, ventas);
+	renderVentasDia(sistema);
+	renderHistorial(sistema);
+}
+function eliminarVenta(sistema, nombre) {
+	if (!confirm('¿Seguro que deseas eliminar esta venta?')) return;
+	let ventas = getData(getKeys(sistema).ventas);
+	let idx = ventas.findIndex(v => v.nombre === nombre && v.fecha === getToday());
+	if (idx < 0) return;
+	registrarHistorial(sistema, 'Eliminación Venta', nombre, ventas[idx].categoria, ventas[idx].cantidad);
+	ventas.splice(idx,1);
+	setData(getKeys(sistema).ventas, ventas);
+	renderVentasDia(sistema);
+	renderHistorial(sistema);
+}
+// Menú para elegir inventario
+function mostrarInventario(sistema) {
+	document.getElementById('menu-principal').style.display = 'none';
+	document.getElementById('inventarioA').style.display = sistema === 'A' ? '' : 'none';
+	document.getElementById('inventarioB').style.display = sistema === 'B' ? '' : 'none';
+}
+function volverMenu() {
+	document.getElementById('menu-principal').style.display = '';
+	document.getElementById('inventarioA').style.display = 'none';
+	document.getElementById('inventarioB').style.display = 'none';
+}
 
-    document.getElementById('pdfVentasBar').onclick = function() {
-        generarPDFVentasHoyBar();
-    };
-    function generarPDFVentasHoyBar() {
-        const hoy = new Date().toISOString().slice(0,10);
-        // Agrupar ventas por producto
-        const ventasHoy = ventasBar.filter(v => v.fecha && v.fecha.slice(0,10) === hoy);
-        if (ventasHoy.length === 0) {
-            alert('No hay ventas registradas hoy.');
-            return;
-        }
-        // Resumen por producto
-        const resumen = {};
-        ventasHoy.forEach(v => {
-            if (!resumen[v.nombre]) resumen[v.nombre] = 0;
-            resumen[v.nombre] += v.cantidad;
-        });
-        const { jsPDF } = window.jspdf;
-        const doc = new jsPDF();
-        doc.setFontSize(16);
-        doc.text('Informe de ventas - ' + hoy, 10, 15);
-        doc.setFontSize(12);
-        let y = 30;
-        doc.text('Producto', 10, y);
-        doc.text('Cantidad', 80, y);
-        doc.text('Hora', 130, y);
-        y += 8;
-        ventasHoy.forEach(v => {
-            doc.text(v.nombre.charAt(0).toUpperCase() + v.nombre.slice(1), 10, y);
-            doc.text(String(v.cantidad), 80, y);
-            doc.text(new Date(v.fecha).toLocaleTimeString(), 130, y);
-            y += 8;
-        });
-        y += 8;
-        doc.setFontSize(13);
-        doc.text('Resumen total por producto:', 10, y);
-        y += 8;
-        Object.entries(resumen).forEach(([nombre, total]) => {
-            doc.text(`${nombre.charAt(0).toUpperCase() + nombre.slice(1)}: ${total}`, 15, y);
-            y += 7;
-        });
-        doc.save('ventas_bar_' + hoy + '.pdf');
-    }
-    function programarPDFAutomaticoBar() {
-        function checkHora() {
-            const ahora = new Date();
-            if (ahora.getHours() === 21 && ahora.getMinutes() === 0) {
-                generarPDFVentasHoyBar();
-            }
-        }
-        setInterval(checkHora, 60000);
-    }
-    cargarDatosBar();
-    actualizarTablaBar();
-    actualizarSelectBar();
-    mostrarAlertaStockBajoBar();
-    programarPDFAutomaticoBar();
-    </script>
+function mostrarCorte(sistema) {
+	const pass = document.getElementById(`${sistema.toLowerCase()}-admin-pass`).value;
+	if (pass !== adminPasswords[sistema]) {
+		alert('Contraseña incorrecta'); return;
+	}
+	// Ventas de la semana agrupadas por día
+	const ventas = getData(getKeys(sistema).ventas).filter(v => getWeekFromDate(v.fecha) === getWeek());
+	const ventasPorDia = {};
+	ventas.forEach(v => {
+		if (!ventasPorDia[v.fecha]) ventasPorDia[v.fecha] = [];
+		ventasPorDia[v.fecha].push(v);
+	});
+	let html = `<h4>Ventas de la semana actual (día por día)</h4>`;
+	Object.keys(ventasPorDia).sort().forEach(dia => {
+		html += `<b>${dia}</b><table><thead><tr><th>Producto</th><th>Cantidad</th></tr></thead><tbody>`;
+		ventasPorDia[dia].forEach(v => {
+			html += `<tr><td>${v.nombre}</td><td>${v.cantidad}</td></tr>`;
+		});
+		html += `</tbody></table>`;
+	});
+	// Historial de ediciones y eliminaciones
+	const historial = getData(getKeys(sistema).historial).filter(h => {
+		return getWeekFromDate(h.fecha && h.fecha.substr(0,10)) === getWeek() && (h.tipo === 'Edición' || h.tipo === 'Eliminación' || h.tipo === 'Actualización');
+	});
+	if (historial.length > 0) {
+		html += `<h4>Ediciones y cambios manuales de la semana</h4><table><thead><tr><th>Fecha</th><th>Tipo</th><th>Producto</th><th>Categoría</th><th>Cantidad</th><th>Usuario</th></tr></thead><tbody>`;
+		historial.forEach(h => {
+			html += `<tr><td>${h.fecha}</td><td>${h.tipo}</td><td>${h.nombre}</td><td>${h.categoria||''}</td><td>${h.cantidad}</td><td>${h.usuario||''}</td></tr>`;
+		});
+		html += `</tbody></table>`;
+	}
+	document.getElementById(`${sistema.toLowerCase()}-corte-semanal`).innerHTML = html;
+	document.getElementById(`${sistema.toLowerCase()}-corte-semanal`).classList.remove('hidden');
+}
+
+function getWeekFromDate(dateStr) {
+	const d = new Date(dateStr);
+	const year = d.getFullYear();
+	const onejan = new Date(d.getFullYear(),0,1);
+	const week = Math.ceil((((d - onejan) / 86400000) + onejan.getDay()+1)/7);
+	return `${year}-W${week}`;
+}
+
+function corroborarInventario(sistema) {
+	const inventario = getData(getKeys(sistema).inventario);
+	let html = '<h4>Conteo actual de inventario</h4><table><thead><tr><th>Producto</th><th>Cantidad</th></tr></thead><tbody>';
+	inventario.forEach(p => {
+		html += `<tr><td>${p.nombre}</td><td>${p.cantidad}</td></tr>`;
+	});
+	html += '</tbody></table>';
+	document.getElementById(`${sistema.toLowerCase()}-corroboracion`).innerHTML = html;
+}
+
+// Inicializar tablas al cargar
+window.onload = function() {
+	renderInventario('A');
+	renderVentasDia('A');
+	renderHistorial('A');
+	renderInventario('B');
+	renderVentasDia('B');
+	renderHistorial('B');
+	document.getElementById('menu-principal').style.display = '';
+	document.getElementById('inventarioA').style.display = 'none';
+	document.getElementById('inventarioB').style.display = 'none';
+}
+</script>
 </body>
 </html>
